@@ -2,19 +2,19 @@ package village;
 
 public class Board {
 
-    private int[][] points = {{3, 0, 2, 2, 0, 3},
-                              {0, 1, 0, 0, 1, 0},
-                              {2, 0, 1, 1, 0, 2},
-                              {0, 1, 0, 0, 1, 0},
-                              {3, 0, 2, 2, 0, 3}};
+    private final int[][] points = {{3, 0, 2, 2, 0, 3},
+                                    {0, 1, 0, 0, 1, 0},
+                                    {2, 0, 1, 1, 0, 2},
+                                    {0, 1, 0, 0, 1, 0},
+                                    {3, 0, 2, 2, 0, 3}};
 
-    private char[][] pieces;
+    private char[][] projects;
 
     public Board() {
-        pieces = new char[5][6];
+        projects = new char[5][6];
         for (int row = 0; row < 5; row ++) {
             for (int col = 0; col < 6; col++) {
-                pieces[row][col] = '-';
+                projects[row][col] = '-';
             }
         }
     }
@@ -27,7 +27,7 @@ public class Board {
      * "[8/9   -0 -1 -0 -0 -1 -0]\n" +
      * "[10/11 -3 -0 -2 -2 -0 -3]\n";
      */
-    public String printASCII() {
+    public String toString() {
         StringBuilder builtBoard = new StringBuilder();
         String[] startingChars = {"3/4  ", "5/6  ",
                                   "7    ", "8/9  ",
@@ -37,7 +37,7 @@ public class Board {
         for (int row = 0; row < 5; row++) {
             builtBoard.append('[' + startingChars[row]);
             for (int col = 0; col < 6; col++) {
-                builtBoard.append(" " + pieces[row][col] +
+                builtBoard.append(" " + projects[row][col] +
                                   points[row][col]);
             }
 
@@ -45,5 +45,9 @@ public class Board {
         }
 
         return builtBoard.toString();
+    }
+
+    public void  addProject(Location location, char project){
+        projects[location.getRow()][location.getCol()] = project;
     }
 }
