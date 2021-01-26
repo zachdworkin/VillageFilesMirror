@@ -1,5 +1,7 @@
 package village;
 
+import java.util.ArrayList;
+
 public class Board {
 
     private int[][] points = {{3, 0, 2, 2, 0, 3},
@@ -45,5 +47,39 @@ public class Board {
         }
 
         return builtBoard.toString();
+    }
+
+    public int availableProjectsInColumn(int col){
+        int availableProjects = 5;
+        for (int i = 0; i < 5; i++) {
+            if(pieces[i][col] != '-') availableProjects--;
+        }
+        return availableProjects;
+    }
+
+    public ArrayList<Integer> findPlayableColumns(int col){
+        ArrayList<Integer> playable = new ArrayList<>();
+
+        if(availableProjectsInColumn(col) != 0){
+            playable.add(col);
+            return playable;
+        }
+        for (int offset = 1; offset < 6; offset++) {
+            int availableInLeftColumn = availableProjectsInColumn(col - offset);
+            int availableInRightColumn = availableProjectsInColumn(col + offset);
+
+            if (availableInLeftColumn != 0 || availableInRightColumn != 0) {
+                if (availableInLeftColumn == availableInRightColumn) {
+                    playable.add(col - offset);
+                    playable.add(col + offset);
+                } else if (availableInLeftColumn > availableInRightColumn) {
+                    playable.add(col - offset);
+                } else if(availableInRightColumn > availableInLeftColumn){
+                    playable.add(col + offset);
+                }
+                return playable;
+            }
+        }
+        return playable;
     }
 }

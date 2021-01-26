@@ -20,4 +20,10 @@ class BoardTest {
 //        System.out.println(board.printASCII());
         assertEquals(board.printASCII(), correct);
     }
+
+    @Test
+    void findsAvailableProjects(){
+        Board board = new Board();
+        assertEquals(board.availableProjectsInColumn(3), 5);
+    }
 }
