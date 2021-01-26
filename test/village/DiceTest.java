@@ -31,4 +31,10 @@ class DiceTest {
             }
         }
     }
+
+    @Test
+    void correctlyAddsTwoRolls() {
+        int[] test = Dice.rollTwice();
+        assertEquals(test[0] + test[1], test[2]);
+    }
 }
