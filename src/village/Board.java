@@ -65,8 +65,16 @@ public class Board {
             return playable;
         }
         for (int offset = 1; offset < 6; offset++) {
-            int availableInLeftColumn = availableProjectsInColumn(col - offset);
-            int availableInRightColumn = availableProjectsInColumn(col + offset);
+            int availableInLeftColumn = 0;
+            int availableInRightColumn = 0;
+
+            if (col - offset > 0) {
+                availableInLeftColumn = availableProjectsInColumn(col - offset);
+            }
+
+            if (col + offset < 6) {
+                availableInRightColumn = availableProjectsInColumn(col + offset);
+            }
 
             if (availableInLeftColumn != 0 || availableInRightColumn != 0) {
                 if (availableInLeftColumn == availableInRightColumn) {
