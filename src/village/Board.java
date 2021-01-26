@@ -1,5 +1,7 @@
 package village;
 
+import java.util.ArrayList;
+
 public class Board {
 
     private final int[][] points = {{3, 0, 2, 2, 0, 3},
@@ -45,6 +47,48 @@ public class Board {
         }
 
         return builtBoard.toString();
+    }
+
+    public int availableProjectsInColumn(int col){
+        int availableProjects = 5;
+        for (int i = 0; i < 5; i++) {
+            if(projects[i][col] != '-') availableProjects--;
+        }
+        return availableProjects;
+    }
+
+    public ArrayList<Integer> findPlayableColumns(int col) {
+        ArrayList<Integer> playable = new ArrayList<>();
+
+        if (availableProjectsInColumn(col) != 0) {
+            playable.add(col);
+            return playable;
+        }
+        for (int offset = 1; offset < 6; offset++) {
+            int availableInLeftColumn = 0;
+            int availableInRightColumn = 0;
+
+            if (col - offset >= 0) {
+                availableInLeftColumn = availableProjectsInColumn(col - offset);
+            }
+
+            if (col + offset < 6) {
+                availableInRightColumn = availableProjectsInColumn(col + offset);
+            }
+
+            if (availableInLeftColumn != 0 || availableInRightColumn != 0) {
+                if (availableInLeftColumn == availableInRightColumn) {
+                    playable.add(col - offset);
+                    playable.add(col + offset);
+                } else if (availableInLeftColumn > availableInRightColumn) {
+                    playable.add(col - offset);
+                } else if (availableInRightColumn > availableInLeftColumn) {
+                    playable.add(col + offset);
+                }
+                return playable;
+            }
+        }
+        return playable;
     }
 
     public void  addProject(Location location, char project){
