@@ -50,6 +50,26 @@ class BoardTest {
     }
 
     @Test
+    void findsNoProjectsOffBoard() {
+        Board board = new Board();
+        board.addProject(new Location(0,0), '^');
+        board.addProject(new Location(1,0), '^');
+        board.addProject(new Location(2,0), '^');
+        board.addProject(new Location(3,0), '^');
+        board.addProject(new Location(4,0), '^');
+
+        board.addProject(new Location(0,1), '^');
+        board.addProject(new Location(1,1), '^');
+        board.addProject(new Location(2,1), '^');
+        board.addProject(new Location(3,1), '^');
+        board.addProject(new Location(4,1), '^');
+
+        ArrayList<Integer> contents = board.findPlayableColumns(0);
+        assertEquals(contents.size(), 1);
+        assertEquals(contents.get(0), 2);
+    }
+
+    @Test
     void findsAvailableProjects(){
         Board board = new Board();
         assertEquals(board.availableProjectsInColumn(3), 5);

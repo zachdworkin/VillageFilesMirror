@@ -68,7 +68,7 @@ public class Board {
             int availableInLeftColumn = 0;
             int availableInRightColumn = 0;
 
-            if (col - offset > 0) {
+            if (col - offset >= 0) {
                 availableInLeftColumn = availableProjectsInColumn(col - offset);
             }
 
