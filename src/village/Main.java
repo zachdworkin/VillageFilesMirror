@@ -23,9 +23,13 @@ public class Main {
         System.out.println("In which row do want to build " + projects[rolls[0]]);
         Scanner input = new Scanner(System.in);
         int row = input.nextInt();
-        Location project1 = new Location(row-1, rolls[1]);
+        Location project1 = new Location(row-1, rolls[1]-1);
+        board.addProject(project1, projects[rolls[0]]);
+        System.out.println(board.toString());
         System.out.println("In which row do want to build " + projects[rolls[1]]);
         row = input.nextInt();
-        Location project2 = new Location(row-1, rolls[0]);
+        Location project2 = new Location(row-1, rolls[0]-1);
+        board.addProject(project2, projects[rolls[1]]);
+        System.out.println(board.toString());
     }
 }
