@@ -94,4 +94,18 @@ public class Board {
     public void  addProject(Location location, char project){
         projects[location.getRow()][location.getCol()] = project;
     }
+
+    /**
+     * Returns whether a slot on the board has no project on it.
+     */
+    private boolean isEmpty(int row,  int col){
+        return (projects[row][col] == '-');
+    }
+
+    /**
+     * Returns whether a slot on the board has no project on it.
+     */
+    public boolean isEmpty(Location location){
+        return isEmpty(location.getRow(), location.getCol());
+    }
 }
