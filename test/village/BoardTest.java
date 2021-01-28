@@ -161,4 +161,19 @@ class BoardTest {
         assertEquals(contents.size(), 1);
         assertEquals(contents.get(0), 5);
     }
+
+    @Test
+    void isEmptyWorksOnEmptyWithLocation(){
+        Board board = new Board();
+        Location location = new Location(3,3);
+        assertTrue(board.isEmpty(location));
+    }
+
+    @Test
+    void isEmptyWorksOnNotEmptyWithLocation(){
+        Board board = new Board();
+        Location location = new Location(3,3);
+        board.addProject(location, '^');
+        assertFalse(board.isEmpty(location));
+    }
 }
