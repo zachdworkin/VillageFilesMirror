@@ -3,6 +3,8 @@ package village;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -175,5 +177,26 @@ class BoardTest {
         Location location = new Location(3,3);
         board.addProject(location, '^');
         assertFalse(board.isEmpty(location));
+    }
+
+    @Test
+    void findsAdjacentProjects(){
+        Board board = new Board();
+        board.addProject(new Location(1, 1), '^');
+        board.addProject(new Location(2, 3), '#');
+        board.addProject(new Location(3, 2), 'O');
+        board.addProject(new Location(4, 1), 'H');
+
+        List<Character> correct = Arrays.asList(new Character[] {'O', '-', '#', '-'});
+        assertEquals(correct, board.getAdjacentProjects(2, 2));
+    }
+
+    @Test
+    void findsAdjacentProjectsAtEdgeOfBoard(){
+        Board board = new Board();
+        board.addProject(new Location(0, 1), '^');
+
+        List<Character> correct = Arrays.asList(new Character[] {'-', '^'});
+        assertEquals(correct, board.getAdjacentProjects(0, 0));
     }
 }
