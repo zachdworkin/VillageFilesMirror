@@ -19,6 +19,7 @@ public class Main {
 
     private void getRolls() {
         rolls = Dice.rollTwice();
+        rolls[0] = rolls[1] = 1;
         System.out.println("First roll: " + rolls[0]);
         System.out.println("Second roll: " + rolls[1]);
         System.out.println("Sum of rolls: " + rolls[2]);
@@ -26,15 +27,42 @@ public class Main {
 
     private void pickRowAndPlaceProject(int col, char proj) {
         System.out.println("In which row do want to build " + proj + "?");
-        //TODO add a helper function that creates the arraylist given to checkInput that checks if a row can take a project for a given column
-        String row = checkInput(new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5")));
-        //check if row, column is empty
+        String row = checkInput(getValidRowInput(col-1));
         System.out.println(Integer.parseInt(row));
         Location project1 = new Location(Integer.parseInt(row) - 1, col - 1);
         board.addProject(project1, proj);
         System.out.println(board.toString());
     }
 
+    /**
+     * Returns playable rows in given column
+     * @param col integer column
+     * @return arraylist of rows in string form
+     */
+    private ArrayList<String> getValidRowInput(int col){
+        ArrayList<String> validRows = new ArrayList<>();
+        for (int row = 0; row < 5; row++) {
+            if (board.isEmpty(new Location(row, col))){
+                validRows.add(Integer.toString(row+1));
+            }
+        }
+        return validRows;
+    }
+
+    /**
+     * Returns playable columns
+     * @return arraylist of columns in string form
+     */
+    private ArrayList<String> getValidColInput(){
+        ArrayList<String> validColumns = new ArrayList<>();
+        for (int col = 0; col < 6; col++) {
+            ArrayList<Integer> playableColumns = board.findPlayableColumns(col);
+            if (playableColumns.size() == 1 && playableColumns.contains(col)){
+                validColumns.add(Integer.toString(col+1));
+            }
+        }
+        return validColumns;
+    }
     /**
      * helper function for checkInput
      * prints valid inputs
@@ -84,11 +112,6 @@ public class Main {
         System.out.println("Select the second project to place in column " + rolls[1]);
         proj = checkInput(availablePreProjects);
         pickRowAndPlaceProject(rolls[1], proj.toCharArray()[0]);
-
-        //select projects to place (must be different cannot be square)
-        //place first one
-        //place second one
-        //do not score points
     }
 
     public void takeTurn() {
@@ -103,21 +126,11 @@ public class Main {
             System.out.println("You get to place a " + projects[rolls[1]] + " in column " + rolls[0]);
         }
 
-        pickRowAndPlaceProject(rolls[0], projects[rolls[1]]); //System.out.println("In which row do want to build " + projects[rolls[0]] + "?");
-        //this is for checking valid inputs
-//        // Make sure space is empty
-//        do {
-//            do {
-//                System.out.print("Enter a row (with an empty space) from 1 to 5: ");
-//                row = input.nextInt();
-//            } while (row < 1 || row > 5);
-//            location = new Location(row - 1, rolls[1] - 1);
-//        } while (!board.isEmpty(location));
-//        board.addProject(location, projects[rolls[0]]);
+        pickRowAndPlaceProject(rolls[0], projects[rolls[1]]);
         if (square) {
             System.out.println("In which column do you want to build #?");
-            //select column
-            pickRowAndPlaceProject(rolls[1], '#'); //rolls[1] will be replaced with selected column
+            String column = checkInput(getValidColInput());
+            pickRowAndPlaceProject(Integer.parseInt(column), '#'); //rolls[1] will be replaced with selected column
         } else {
             pickRowAndPlaceProject(rolls[1], projects[rolls[0]]);
         }
