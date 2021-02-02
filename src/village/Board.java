@@ -156,4 +156,22 @@ public class Board {
 
         return adjacentProjects;
     }
+
+    /**
+     * Returns the score added by the final scoring of squares.
+     */
+    public int finalScoring() {
+        int finalScore = 0;
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLS; col++) {
+                if (getProject(row, col) == '#') {
+                    List<Character> adjacentProjects = getAdjacentProjects(row, col);
+                    if (adjacentProjects.contains('H') && adjacentProjects.contains('^') && adjacentProjects.contains('O')) {
+                        finalScore += 10;
+                    }
+                }
+            }
+        }
+        return finalScore;
+    }
 }

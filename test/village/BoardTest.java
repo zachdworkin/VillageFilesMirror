@@ -199,4 +199,22 @@ class BoardTest {
         List<Character> correct = Arrays.asList(new Character[] {'-', '^'});
         assertEquals(correct, board.getAdjacentProjects(0, 0));
     }
+
+    @Test
+    void finalScoresSquaresCorrectly(){
+        Board board = new Board();
+        board.addProject(new Location(1, 1), '#');
+        board.addProject(new Location(0, 1), 'H');
+        board.addProject(new Location(1, 0), 'H');
+        board.addProject(new Location(1, 2), 'H');
+
+        board.addProject(new Location(3, 4), '#');
+        board.addProject(new Location(3, 3), 'H');
+        board.addProject(new Location(4, 4), 'O');
+        board.addProject(new Location(3, 5), '^');
+
+        board.addProject(new Location(4, 0), '#');
+
+        assertEquals(10, board.finalScoring());
+    }
 }
