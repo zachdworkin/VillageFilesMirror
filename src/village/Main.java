@@ -27,9 +27,6 @@ public class Main {
     }
 
     public void takeTurn(int turn) {
-        if(turn % 3 == 0){
-            bonusPhase();
-        }
         // Roll the dice
         int[] rolls = Dice.rollTwice();
         boolean square = rolls[0] == rolls[1];
@@ -84,6 +81,10 @@ public class Main {
             board.addProject(location, projects[rolls[1]]);
         }
         System.out.println(board.toString());
+
+        if(turn % 3 == 0){
+            bonusPhase();
+        }
     }
 
     private void bonusPhase() {
