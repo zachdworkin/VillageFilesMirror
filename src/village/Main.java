@@ -19,7 +19,7 @@ public class Main {
 
     private void getRolls() {
         rolls = Dice.rollTwice();
-        rolls[0] = rolls[1] = 1;
+        rolls[0] = rolls[1] = 2;
         System.out.println("First roll: " + rolls[0]);
         System.out.println("Second roll: " + rolls[1]);
         System.out.println("Sum of rolls: " + rolls[2]);
@@ -118,21 +118,54 @@ public class Main {
         System.out.println("--------------------------------");
         getRolls();
         boolean square = rolls[0] == rolls[1];
-
-        System.out.println("You get to place a " + projects[rolls[0]] + " in column " + rolls[1]);
+        ArrayList<Integer> playableCol = board.findPlayableColumns(rolls[1]);
+        System.out.println(playableCol.get(0));
+        int selectedCol = rolls[1];
+        int selectedCol2 = rolls[0];
+        if (playableCol.size() == 1) {
+            if (!playableCol.contains(rolls[1])){
+                System.out.println("Column " + rolls[1] + " is full.");
+            }
+            System.out.println("You get to place a " + projects[rolls[0]] + " in column " +
+                                (playableCol.get(0)));
+            selectedCol = playableCol.get(0);
+        } else {
+            System.out.println("You get to place a " + projects[rolls[0]] + " in column " +
+                                (playableCol.get(0)) + " or " + (playableCol.get(1)));
+            ArrayList<String> validInpts = new ArrayList();
+            validInpts.add(Integer.toString(playableCol.get(0)));
+            validInpts.add(Integer.toString(playableCol.get(1)));
+            selectedCol = Integer.parseInt(checkInput(validInpts));
+        }
         if (square) {
             System.out.println("You get to place a # anywhere.");
         } else {
-            System.out.println("You get to place a " + projects[rolls[1]] + " in column " + rolls[0]);
+            playableCol = board.findPlayableColumns(rolls[0]);
+            if (playableCol.size() == 1) {
+                System.out.println("You get to place a " + projects[rolls[1]] + " in column " +
+                        (playableCol.get(0)));
+                if (!playableCol.contains(rolls[0])){
+                    System.out.println("Column " + rolls[0] + " is full.");
+                }
+                selectedCol2 = playableCol.get(0);
+            } else {
+                System.out.println("You get to place a " + projects[rolls[1]] + " in column " +
+                        (playableCol.get(0)) + " or " + (playableCol.get(1)));
+                ArrayList<String> validInpts = new ArrayList();
+                validInpts.add(Integer.toString(playableCol.get(0)));
+                validInpts.add(Integer.toString(playableCol.get(1)));
+                selectedCol2 = Integer.parseInt(checkInput(validInpts));
+            }
         }
-
-        pickRowAndPlaceProject(rolls[0], projects[rolls[1]]);
+        System.out.println("selectedcol = " + selectedCol);
+        System.out.println("selectedcol2 = " + selectedCol);
+        pickRowAndPlaceProject(selectedCol, projects[rolls[1]]);
         if (square) {
             System.out.println("In which column do you want to build #?");
             String column = checkInput(getValidColInput());
-            pickRowAndPlaceProject(Integer.parseInt(column), '#'); //rolls[1] will be replaced with selected column
+            pickRowAndPlaceProject(Integer.parseInt(column), '#');
         } else {
-            pickRowAndPlaceProject(rolls[1], projects[rolls[0]]);
+            pickRowAndPlaceProject(selectedCol2, projects[rolls[0]]);
         }
     }
 }
