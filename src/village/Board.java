@@ -2,6 +2,7 @@ package village;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class Board {
 
@@ -13,15 +14,21 @@ public class Board {
     private final static int ROWS = 5;
     private final static int COLS = 6;
 
+    private int score;
     private char[][] projects;
 
     public Board() {
+        score = 0;
         projects = new char[5][6];
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLS; col++) {
                 projects[row][col] = '-';
             }
         }
+    }
+
+    public int getScore(){
+        return score;
     }
 
     /*
@@ -172,6 +179,67 @@ public class Board {
                 }
             }
         }
+        score += finalScore;
         return finalScore;
+    }
+
+    public void findGroup(int row, int col, char project, boolean[][] inGroup){
+        inGroup[row][col] = true;
+        if (row + 1 < ROWS) {
+            if(getProject(row + 1, col) == project && !inGroup[row + 1][col]) {
+                findGroup(row + 1, col, project, inGroup);
+            }
+        }
+        if (row - 1 >= 0) {
+            if(getProject(row - 1, col) == project && !inGroup[row - 1][col]) {
+                findGroup(row - 1, col, project, inGroup);
+            }
+        }
+        if (col + 1 < COLS) {
+            if(getProject(row, col + 1) == project && !inGroup[row][col  + 1]) {
+                findGroup(row, col + 1, project, inGroup);
+            }
+        }
+        if (col - 1 >= 0) {
+            if(getProject(row, col - 1) == project && !inGroup[row][col  - 1]) {
+                findGroup(row, col - 1, project, inGroup);
+            }
+        }
+    }
+
+    public boolean[][] findGroup(int row, int col){
+        boolean[][] inGroup = new boolean[ROWS][COLS];
+        char project = getProject(row, col);
+
+        if(project == '-' || project == '#'){
+            return inGroup;
+        }
+        findGroup(row, col, project, inGroup);
+        return inGroup;
+    }
+
+    /**
+     * Returns the score for the current turn.
+     */
+    public int scoreRow(int scoringRow){
+        int score = 0;
+        boolean[][][] toBeScored = new boolean[COLS][][];
+        for (int col = 0; col < COLS; col++) {
+            toBeScored[col] = findGroup(scoringRow, col);
+        }
+
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLS; col++) {
+                boolean reachable = false;
+                for (int group = 0; group < COLS; group++) {
+                    reachable |= toBeScored[group][row][col];
+                }
+                if(reachable){
+                    score += points[row][col];
+                }
+            }
+        }
+        this.score += score;
+        return score;
     }
 }

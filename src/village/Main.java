@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class Main {
     private Board board = new Board();
     private static char[] projects = {'#', 'H', '^', 'O', 'H', '^', 'O'};
+    private static int[] rowFromSum = {-1, -1, -1, 0, 0, 1, 1, 2, 3, 3, 4, 4, -1};
 
     public static void main(String[] args) {
         Main main = new Main();
@@ -66,5 +67,16 @@ public class Main {
             board.addProject(location, projects[rolls[1]]);
         }
         System.out.println(board.toString());
+
+        if(rolls[2] == 2 || rolls[2] == 12) {
+            do {
+                System.out.print("Enter a row (with an empty space) from 1 to 5: ");
+                row = input.nextInt();
+            } while (row < 1 || row > 5);
+            board.scoreRow(row);
+        }
+        else{
+            board.scoreRow(rowFromSum[rolls[2]]);
+        }
     }
 }
