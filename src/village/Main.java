@@ -1,5 +1,6 @@
 package village;
 
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
@@ -10,13 +11,9 @@ public class Main {
     private Board board;
     private Set<Character> bonusProjects;
 
-    public Main(){
-        bonusProjects = new TreeSet<>();
-        bonusProjects.add('^');
-        bonusProjects.add('H');
-        bonusProjects.add('O');
-
+    public Main() {
         board = new Board();
+        bonusProjects = new TreeSet<>(Arrays.asList('H', '^', 'O'));
     }
 
     public static void main(String[] args) {
