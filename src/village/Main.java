@@ -26,7 +26,7 @@ public class Main {
 
     private void pickRowAndPlaceProject(int col, char proj) {
         System.out.println("In which row do want to build " + proj + "?");
-        String row = checkInput(getValidRowInput(col-1));
+        String row = checkInput(getValidRowInput(col - 1));
         System.out.println(Integer.parseInt(row));
         Location project1 = new Location(Integer.parseInt(row) - 1, col - 1);
         board.addProject(project1, proj);
@@ -35,14 +35,15 @@ public class Main {
 
     /**
      * Returns playable rows in given column
+     *
      * @param col integer column
      * @return arraylist of rows in string form
      */
-    private ArrayList<String> getValidRowInput(int col){
+    private ArrayList<String> getValidRowInput(int col) {
         ArrayList<String> validRows = new ArrayList<>();
         for (int row = 0; row < 5; row++) {
-            if (board.isEmpty(new Location(row, col))){
-                validRows.add(Integer.toString(row+1));
+            if (board.isEmpty(new Location(row, col))) {
+                validRows.add(Integer.toString(row + 1));
             }
         }
         return validRows;
@@ -50,21 +51,24 @@ public class Main {
 
     /**
      * Returns playable columns
+     *
      * @return arraylist of columns in string form
      */
-    private ArrayList<String> getValidColInput(){
+    private ArrayList<String> getValidColInput() {
         ArrayList<String> validColumns = new ArrayList<>();
         for (int col = 0; col < 6; col++) {
             ArrayList<Integer> playableColumns = board.findPlayableColumns(col);
-            if (playableColumns.size() == 1 && playableColumns.contains(col)){
-                validColumns.add(Integer.toString(col+1));
+            if (playableColumns.size() == 1 && playableColumns.contains(col)) {
+                validColumns.add(Integer.toString(col + 1));
             }
         }
         return validColumns;
     }
+
     /**
      * helper function for checkInput
      * prints valid inputs
+     *
      * @param selectableInputs an ArrayList of input strings to print
      */
     private void printSelectables(ArrayList<String> selectableInputs) {
@@ -77,6 +81,7 @@ public class Main {
 
     /**
      * Checks any user input for validity
+     *
      * @param validInputs an ArrayList of valid input strings
      * @return their input as a character
      */
@@ -87,7 +92,7 @@ public class Main {
             String usrInpt = input.next();
             if (validInputs.contains(usrInpt)) {
                 return usrInpt;
-            } else{
+            } else {
                 System.out.println("Invalid input, please select an available input");
                 printSelectables(validInputs);
             }
@@ -98,12 +103,12 @@ public class Main {
         ArrayList<String> availablePreProjects = new ArrayList<>(Arrays.asList("H", "^", "O"));
         getRolls();
         System.out.println("You start with two projects, select the first project to " +
-                           "place in column " + rolls[0]);
+                "place in column " + rolls[0]);
 
         String proj = checkInput(availablePreProjects);
         availablePreProjects.remove(availablePreProjects.indexOf(proj));
         System.out.println("You get to place a '" + proj + "' in column " + rolls[0] +
-                           ". Select row to place it in.");
+                ". Select row to place it in.");
         System.out.println(board.toString());
 
         pickRowAndPlaceProject(rolls[0], proj.toCharArray()[0]);
@@ -120,33 +125,34 @@ public class Main {
         ArrayList<Integer> playableCol = board.findPlayableColumns(rolls[1] - 1);
         int selectedCol = rolls[1];
         int selectedCol2 = rolls[0];
-        if (!playableCol.contains(rolls[1] - 1)){
+        if (!playableCol.contains(rolls[1] - 1)) {
             System.out.print("Column " + rolls[1] + " is full. ");
         }
 
         if (playableCol.size() == 1) {
             System.out.println("You get to place a " + projects[rolls[0]] + " in column " +
-                                (playableCol.get(0) + 1));
+                    (playableCol.get(0) + 1));
             selectedCol = playableCol.get(0) + 1;
         } else {
             System.out.println("You get to place a " + projects[rolls[0]] + " in column " +
-                                (playableCol.get(0) + 1) + " or " + (playableCol.get(1) + 1));
+                    (playableCol.get(0) + 1) + " or " + (playableCol.get(1) + 1));
             ArrayList<String> validInpts = new ArrayList();
             validInpts.add(Integer.toString(playableCol.get(0) + 1));
             validInpts.add(Integer.toString(playableCol.get(1) + 1));
             selectedCol = Integer.parseInt(checkInput(validInpts));
         }
 
-        pickRowAndPlaceProject(selectedCol, projects[rolls[1]]);
+        pickRowAndPlaceProject(selectedCol, projects[rolls[0]]);
+
         if (!square) {
             playableCol = board.findPlayableColumns(rolls[0] - 1);
-            if (!playableCol.contains(rolls[0] - 1)){
+            if (!playableCol.contains(rolls[0] - 1)) {
                 System.out.print("Column " + rolls[0] + " is full. ");
             }
 
             if (playableCol.size() == 1) {
-                System.out.println("You get to place a " + projects[rolls[0]] + " in column " +
-                                    (playableCol.get(0) + 1));
+                System.out.println("You get to place a " + projects[rolls[1]] + " in column " +
+                        (playableCol.get(0) + 1));
                 selectedCol2 = playableCol.get(0) + 1;
             } else {
                 System.out.println("You get to place a " + projects[rolls[1]] + " in column " +
@@ -164,7 +170,7 @@ public class Main {
             String column = checkInput(getValidColInput());
             pickRowAndPlaceProject(Integer.parseInt(column), '#');
         } else {
-            pickRowAndPlaceProject(selectedCol2, projects[rolls[0]]);
+            pickRowAndPlaceProject(selectedCol2, projects[rolls[1]]);
         }
     }
 }
