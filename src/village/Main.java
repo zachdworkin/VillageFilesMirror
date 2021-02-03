@@ -24,6 +24,8 @@ public class Main {
         for (int turn = 1; turn < 10; turn++) {
             main.takeTurn(turn);
         }
+        System.out.println("Final score from squares with all three adjacent project types: "
+                + main.board.finalScoring());
     }
 
     private void getRolls() {
@@ -197,7 +199,7 @@ public class Main {
         do {
             System.out.print("Enter what project you want to build: ");
             project = input.next().charAt(0);
-        } while(!bonusProjects.contains(project));
+        } while (!bonusProjects.contains(project));
         bonusProjects.remove(project);
 
         System.out.println("In which row and column do you want to build " + project + "?");
