@@ -14,9 +14,6 @@ public class MainTest {
     void MainTest() {
         main = new Main();
     }
-    @Test
-    void placesInitialProjectsCorrectly() {
-    }
 
     @Test
     void getValidRowInputFindsNoRowsWhenColumnIsFull() {
