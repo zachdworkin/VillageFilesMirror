@@ -33,6 +33,7 @@ public class MainTest {
         main.board.addProject(new Location(2,2), '^');
         main.board.addProject(new Location(3,2), '^');
         ArrayList<String> validInpt = main.getValidRowInput(2);
+        assertEquals(1, validInpt.size());
         assertTrue(validInpt.contains("5"));
     }
 
@@ -41,6 +42,7 @@ public class MainTest {
         main.board.addProject(new Location(1,2), '^');
         main.board.addProject(new Location(3,2), '^');
         ArrayList<String> validInpt = main.getValidRowInput(2);
+        assertEquals(3, validInpt.size());
         // returns what the user can type (0 + 1) = row 1
         assertTrue(validInpt.contains("1"));
         assertFalse(validInpt.contains("2"));
