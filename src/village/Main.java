@@ -15,10 +15,12 @@ public class Main {
     private int[] rolls = new int[2];
     public Board board;
     private Set<Character> bonusProjects;
+    private double[] mouseClick;
 
     public Main() {
         board = new Board();
         bonusProjects = new TreeSet<>(Arrays.asList('H', '^', 'O'));
+        mouseClick = new double[2];
     }
 
     public static void main(String[] args) {
@@ -317,6 +319,38 @@ public class Main {
             StdDraw.rectangle(xOffset + 50, yOffset + 50, 30, 30);
         }
         StdDraw.show();
+    }
+
+    public void waitForClick() {
+        while (!StdDraw.isMousePressed()) {
+            // Wait for mouse press
+        }
+
+        mouseClick[0] = StdDraw.mouseX();
+        mouseClick[1] = StdDraw.mouseY();
+        while (StdDraw.isMousePressed()) {
+            // Wait for mouse release
+        }
+    }
+
+    /**
+     * Translate click from graphics to array indices
+     */
+    private void translateClick() {
+        mouseClick[0] = Math.floor(mouseClick[0] / 100);
+        mouseClick[1] = board.ROWS - Math.floor(mouseClick[1] / 100);
+    }
+
+    private boolean isClickValid() {
+        if (!(mouseClick[1] < board.ROWS) || !(mouseClick[0] < board.COLS)) {return false;}
+        return true;
+    }
+
+    private void getAndTranslateClick() {
+        do {
+            waitForClick();
+            translateClick();
+        } while (!isClickValid());
     }
 }
 
