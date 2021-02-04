@@ -27,6 +27,7 @@ public class Main {
         }
         System.out.println("Final score from squares with all three adjacent project types: "
                 + main.board.finalScoring());
+        System.out.println("Final score of the game: " + main.board.getScore());
     }
 
     private void getRolls() {
@@ -202,7 +203,7 @@ public class Main {
             board.scoreRow(row);
         }
         else{
-            board.scoreRow(rowFromSum[rolls[2]]);
+            System.out.println("Score for this round: " + board.scoreRow(rowFromSum[rolls[2]]));
         }
     }
 
