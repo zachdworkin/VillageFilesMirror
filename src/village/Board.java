@@ -117,7 +117,7 @@ public class Board {
      */
     public void addProject(Location location, char project) {
         if (!isEmpty(location)) {
-            throw new IllegalArgumentException("Locations already has a project");
+            throw new IllegalArgumentException("Location already has a project");
         }
         projects[location.getRow()][location.getCol()] = project;
     }
