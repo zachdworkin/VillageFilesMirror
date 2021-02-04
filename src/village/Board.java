@@ -47,10 +47,13 @@ public class Board {
 
         builtBoard.append("[-      1  2  3  4  5  6]\n");
         for (int row = 0; row < ROWS; row++) {
-            builtBoard.append('[' + startingChars[row]);
+            builtBoard.append('[');
+            builtBoard.append(startingChars[row]);
             for (int col = 0; col < COLS; col++) {
-                builtBoard.append(" " + projects[row][col] +
-                        points[row][col]);
+                builtBoard.append(" ");
+                builtBoard.append(projects[row][col]);
+                builtBoard.append(points[row][col]);
+
             }
 
             builtBoard.append("]\n");
@@ -98,7 +101,7 @@ public class Board {
                     playable.add(col + offset);
                 } else if (availableInLeftColumn > availableInRightColumn) {
                     playable.add(col - offset);
-                } else if (availableInRightColumn > availableInLeftColumn) {
+                } else{
                     playable.add(col + offset);
                 }
                 return playable;
@@ -183,7 +186,12 @@ public class Board {
         return finalScore;
     }
 
-    public void findGroup(int row, int col, char project, boolean[][] inGroup){
+    /**
+     * Finds all projects connected to the project in a given space.
+     * Modifies inGroup to mark connected projects.
+     * inGroup must be the same size as the board
+     */
+    private void findGroup(int row, int col, char project, boolean[][] inGroup){
         inGroup[row][col] = true;
         if (row + 1 < ROWS) {
             if(getProject(row + 1, col) == project && !inGroup[row + 1][col]) {
@@ -207,15 +215,21 @@ public class Board {
         }
     }
 
-    public boolean[][] findGroup(int row, int col){
-        boolean[][] inGroup = new boolean[ROWS][COLS];
+    /**
+     * Finds all projects connected to the project in a given space.
+     * Modifies inGroup to mark connected projects.
+     * inGroup must be the same size as the board
+     */
+    private void findGroup(int row, int col, boolean[][] inGroup){
+        if(inGroup[row][col]){
+            return;
+        }
         char project = getProject(row, col);
 
         if(project == '-' || project == '#'){
-            return inGroup;
+            return;
         }
         findGroup(row, col, project, inGroup);
-        return inGroup;
     }
 
     /**
@@ -223,18 +237,14 @@ public class Board {
      */
     public int scoreRow(int scoringRow){
         int score = 0;
-        boolean[][][] toBeScored = new boolean[COLS][][];
+        boolean[][] toBeScored = new boolean[ROWS][COLS];
         for (int col = 0; col < COLS; col++) {
-            toBeScored[col] = findGroup(scoringRow, col);
+            findGroup(scoringRow, col, toBeScored);
         }
 
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLS; col++) {
-                boolean reachable = false;
-                for (int group = 0; group < COLS; group++) {
-                    reachable |= toBeScored[group][row][col];
-                }
-                if(reachable){
+                if(toBeScored[row][col]){
                     score += points[row][col];
                 }
             }
