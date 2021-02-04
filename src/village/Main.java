@@ -1,5 +1,7 @@
 package village;
 
+import edu.princeton.cs.algs4.StdDraw;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -21,9 +23,11 @@ public class Main {
 
     public static void main(String[] args) {
         Main main = new Main();
+        main.initializeGraphics();
         main.placeInitialProjects();
         for (int turn = 1; turn < 10; turn++) {
             main.takeTurn(turn);
+            main.drawBoard();
         }
         System.out.println("Final score from squares with all three adjacent project types: "
                 + main.board.finalScoring());
@@ -231,5 +235,60 @@ public class Main {
         } while (!board.isEmpty(location));
 
         board.addProject(location, project);
+    }
+
+    void initializeGraphics() {
+        StdDraw.enableDoubleBuffering();
+        StdDraw.setXscale(0, 800);
+        StdDraw.setYscale(0, 700);
+        drawBoard();
+    }
+
+    static String[] rowLabels = {null, "3,4", "5,6", "7", "8,9", "10,11"};
+
+    void drawBoard() {
+        StdDraw.clear();
+        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.setFont(new java.awt.Font("Serif", java.awt.Font.PLAIN, 24));
+
+        // Draw grid lines
+        for (int i = 0 ; i < 800; i += 100) {
+            StdDraw.line(i, 1, i, 600);
+            StdDraw.line(1, i, 700, i);
+        }
+
+        // Draw labels
+        for (int column = 1; column <= board.COLS; column++) {
+            StdDraw.text(column * 100 + 50, 550, "" + column);
+        }
+        for (int row = 1; row <= board.ROWS; row++) {
+            StdDraw.text(50, 575 - 100 * row,  "(" + row + ")");
+            StdDraw.text(50, 525 - 100 * row, rowLabels[row]);
+        }
+
+        // Draw points
+        StdDraw.setPenColor(StdDraw.GRAY);
+        for (int row = 1; row <= board.ROWS; row++) {
+            for (int column = 1; column <= board.COLS; column++) {
+                int points = board.points[row - 1][column - 1];
+                if (points != 0) {
+                    StdDraw.text(column * 100 + 50, 550 - 100 * row, "" + points);
+                }
+            }
+        }
+
+        // Draw title and score
+        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.text(425, 625, "Rolling Village");
+        StdDraw.text(75, 625, "Score: " + board.getScore());
+
+        // Draw roll button
+        StdDraw.setPenColor(StdDraw.RED);
+        StdDraw.filledSquare(750, 250, 50);
+        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.square(750, 250, 50);
+        StdDraw.text(750, 250, "Roll");
+
+        StdDraw.show();
     }
 }
