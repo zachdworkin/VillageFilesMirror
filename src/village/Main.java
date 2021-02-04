@@ -200,11 +200,12 @@ public class Main {
                 System.out.print("Enter a row (with an empty space) from 1 to 5: ");
                 row = input.nextInt();
             } while (row < 1 || row > 5);
-            board.scoreRow(row);
+            System.out.println("Scoring row " + row +  " for this round. Score: " + board.scoreRow(row));
         }
         else{
-            System.out.println("Score for this round: " + board.scoreRow(rowFromSum[rolls[2]]));
+            System.out.println("Scoring row " + rowFromSum[rolls[2]] +  " for this round. Score: " + board.scoreRow(rowFromSum[rolls[2]]));
         }
+        System.out.println("Total score is now " + board.getScore());
     }
 
     private void bonusPhase() {
