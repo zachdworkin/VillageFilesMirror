@@ -8,8 +8,9 @@ import java.util.TreeSet;
 
 public class Main {
     private static char[] projects = {'#', 'H', '^', 'O', 'H', '^', 'O'};
-    private int[] rolls = new int[2];
+    private static int[] rowFromSum = {-1, -1, -1, 0, 0, 1, 1, 2, 3, 3, 4, 4, -1};
 
+    private int[] rolls = new int[2];
     public Board board;
     private Set<Character> bonusProjects;
 
@@ -26,6 +27,7 @@ public class Main {
         }
         System.out.println("Final score from squares with all three adjacent project types: "
                 + main.board.finalScoring());
+        System.out.println("Final score of the game: " + main.board.getScore());
     }
 
     private void getRolls() {
@@ -190,6 +192,20 @@ public class Main {
             bonusPhase();
             System.out.println(board.toString());
         }
+
+        int row;
+        Scanner input = new Scanner(System.in);
+        if(rolls[2] == 2 || rolls[2] == 12) {
+            do {
+                System.out.print("Enter a row (with an empty space) from 1 to 5: ");
+                row = input.nextInt();
+            } while (row < 1 || row > 5);
+            System.out.println("Scoring row " + (row + 1) +  " for this round. Score: " + board.scoreRow(row));
+        }
+        else{
+            System.out.println("Scoring row " + (rowFromSum[rolls[2]] + 1) +  " for this round. Score: " + board.scoreRow(rowFromSum[rolls[2]]));
+        }
+        System.out.println("Total score is now " + board.getScore());
     }
 
     private void bonusPhase() {
@@ -213,6 +229,7 @@ public class Main {
             } while (row < 1 || row > 5 || column < 1 || column > 6);
             location = new Location(row - 1, column - 1);
         } while (!board.isEmpty(location));
+
         board.addProject(location, project);
     }
 }
