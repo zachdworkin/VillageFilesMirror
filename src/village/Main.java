@@ -11,7 +11,7 @@ public class Main {
     private static int[] rowFromSum = {-1, -1, -1, 0, 0, 1, 1, 2, 3, 3, 4, 4, -1};
 
     private int[] rolls = new int[2];
-    private Board board;
+    public Board board;
     private Set<Character> bonusProjects;
 
     public Main() {
@@ -52,7 +52,7 @@ public class Main {
      * @param col integer column
      * @return arraylist of rows in string form
      */
-    private ArrayList<String> getValidRowInput(int col) {
+    public ArrayList<String> getValidRowInput(int col) {
         ArrayList<String> validRows = new ArrayList<>();
         for (int row = 0; row < 5; row++) {
             if (board.isEmpty(new Location(row, col))) {
@@ -67,7 +67,7 @@ public class Main {
      *
      * @return arraylist of columns in string form
      */
-    private ArrayList<String> getValidColInput() {
+    public ArrayList<String> getValidColInput() {
         ArrayList<String> validColumns = new ArrayList<>();
         for (int col = 0; col < 6; col++) {
             ArrayList<Integer> playableColumns = board.findPlayableColumns(col);
