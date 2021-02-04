@@ -1,5 +1,8 @@
 package village;
 
+import edu.princeton.cs.algs4.StdDraw;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -20,6 +23,9 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        StdDraw.setXscale(0, 800);
+        StdDraw.setYscale(0, 700);
+
         Main main = new Main();
         main.placeInitialProjects();
         for (int turn = 1; turn < 10; turn++) {
@@ -28,6 +34,8 @@ public class Main {
         System.out.println("Final score from squares with all three adjacent project types: "
                 + main.board.finalScoring());
         System.out.println("Final score of the game: " + main.board.getScore());
+
+
     }
 
     private void getRolls() {
@@ -43,6 +51,7 @@ public class Main {
         System.out.println(Integer.parseInt(row));
         Location project1 = new Location(Integer.parseInt(row) - 1, col - 1);
         board.addProject(project1, proj);
+        drawProject(project1.getRow(), project1.getCol(), proj);
         System.out.println(board.toString());
     }
 
@@ -195,15 +204,14 @@ public class Main {
 
         int row;
         Scanner input = new Scanner(System.in);
-        if(rolls[2] == 2 || rolls[2] == 12) {
+        if (rolls[2] == 2 || rolls[2] == 12) {
             do {
                 System.out.print("Enter a row (with an empty space) from 1 to 5: ");
                 row = input.nextInt();
             } while (row < 1 || row > 5);
-            System.out.println("Scoring row " + (row + 1) +  " for this round. Score: " + board.scoreRow(row));
-        }
-        else{
-            System.out.println("Scoring row " + (rowFromSum[rolls[2]] + 1) +  " for this round. Score: " + board.scoreRow(rowFromSum[rolls[2]]));
+            System.out.println("Scoring row " + (row + 1) + " for this round. Score: " + board.scoreRow(row));
+        } else {
+            System.out.println("Scoring row " + (rowFromSum[rolls[2]] + 1) + " for this round. Score: " + board.scoreRow(rowFromSum[rolls[2]]));
         }
         System.out.println("Total score is now " + board.getScore());
     }
@@ -229,7 +237,34 @@ public class Main {
             } while (row < 1 || row > 5 || column < 1 || column > 6);
             location = new Location(row - 1, column - 1);
         } while (!board.isEmpty(location));
-
+        drawProject(location.getRow(), location.getCol(), project);
         board.addProject(location, project);
     }
+
+    /**
+     * Draws a project on the graphics screen.
+     */
+    private static void drawProject(int row, int col, char project) {
+        int xOffset = 100 + col * 100;
+        int yOffset = 400 - row * 100;
+
+        if (project == 'H') {
+            double[] x = {25 + xOffset, 75 + xOffset, 75 + xOffset, 50 + xOffset, 25 + xOffset};
+            double[] y = {25 + yOffset, 25 + yOffset, 60 + yOffset, 85 + yOffset, 60 + yOffset};
+            StdDraw.polygon(x, y);
+        }
+        else if(project == '^'){
+            double[] x = {25 + xOffset, 75 + xOffset, 50 + xOffset};
+            double[] y = {25 + yOffset, 25 + yOffset, 85 + yOffset};
+            StdDraw.polygon(x, y);
+        }
+        else if(project == 'O'){
+            StdDraw.circle(xOffset + 50, yOffset + 50, 30);
+        }
+        else{
+            StdDraw.rectangle(xOffset + 50, yOffset + 50, 30, 30);
+        }
+
+    }
 }
+
