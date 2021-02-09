@@ -99,7 +99,7 @@ public class MainTest {
         main.mouseClick[0] = 271.4;
         main.mouseClick[1] = 384.3;
         main.translateClick();
-        assertTrue(main.clickIsOnBoard());
+        assertTrue(main.isClickOnBoard());
     }
 
     @Test
@@ -107,10 +107,10 @@ public class MainTest {
         main.mouseClick[0] = 799;
         main.mouseClick[1] = 384.3;
         main.translateClick();
-        assertFalse(main.clickIsOnBoard());
+        assertFalse(main.isClickOnBoard());
         main.mouseClick[0] = 250;
         main.mouseClick[1] = 799;
         main.translateClick();
-        assertFalse(main.clickIsOnBoard());
+        assertFalse(main.isClickOnBoard());
     }
 }

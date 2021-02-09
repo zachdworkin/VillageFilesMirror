@@ -112,7 +112,17 @@ public class Main {
         if (rowCol > 1) {
             Scanner input = new Scanner(System.in);
             while (true) {
-                String usrInpt = input.next();
+                waitForClick();
+                String usrInpt = "";
+                if (mouseClick[0] > 625 && mouseClick[0] < 675) {
+                    if (mouseClick[1] > 870 && mouseClick[1] < 905) {
+                        usrInpt = "H";
+                    } else if (mouseClick[1] > 770 && mouseClick[1] < 830) {
+                        usrInpt = "^";
+                    } else if (mouseClick[1] > 670 && mouseClick[1] < 730) {
+                        usrInpt = "O";
+                    }
+                }
                 if (validInputs.contains(usrInpt)) {
                     return usrInpt;
                 } else {
@@ -124,7 +134,7 @@ public class Main {
             while (true) {
                 getAndTranslateClick();
                 String usrInpt = "" + (int) mouseClick[rowCol];
-                if (clickIsOnBoard() && validInputs.contains(usrInpt)) {
+                if (isClickOnBoard() && validInputs.contains(usrInpt)) {
                     return usrInpt;
                 } else {
                     System.out.println("Invalid input, please select an available input");
@@ -391,24 +401,17 @@ public class Main {
     }
 
     /**
-     *
-     * @return if a click is valid
+     * Bread and butter click call.
      */
-    private boolean isClickValid() {
-
-        return true;
-    }
-
     private void getAndTranslateClick() {
         waitForClick();
         translateClick();
     }
 
     /**
-     * post translation call
-     * @return
+     * Returns whether the user clicked on the board.
      */
-    public boolean clickIsOnBoard() {
+    public boolean isClickOnBoard() {
                 return ((mouseClick[0] <= board.COLS) && (mouseClick[0] > 0) &&
                         (mouseClick[1] <= board.ROWS) && (mouseClick[1] > 0));
             }
@@ -417,13 +420,13 @@ public class Main {
      */
     private void drawProjectTypes(){
 
-        //Lake and associated dice
+        // Lake and associated dice
        StdDraw.picture(475, 700, "3.png", 75, 75);
        StdDraw.picture(550, 700, "6.png", 75, 75);
        StdDraw.setPenColor(StdDraw.BLUE);
        StdDraw.circle(650, 700, 30);
 
-        //Forest and associated dice
+        // Forest and associated dice
         StdDraw.picture(475, 800, "2.png", 75, 75);
         StdDraw.picture(550, 800, "5.png", 75, 75);
         double[] x = {25 + 600, 75 + 600, 50 + 600};
@@ -431,7 +434,7 @@ public class Main {
         StdDraw.setPenColor(StdDraw.GREEN);
         StdDraw.polygon(x, y);
 
-        //House and associated dice
+        // House and associated dice
         StdDraw.picture(475, 900, "1.png", 75, 75);
         StdDraw.picture(550, 900, "4.png", 75, 75);
         double[] x2 = {25 + 600, 75 + 600, 75 + 600, 50 + 600, 25 + 600};
