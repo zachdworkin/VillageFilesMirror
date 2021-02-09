@@ -6,13 +6,13 @@ import java.util.Set;
 
 public class Board {
 
-    private final static int[][] points = {{3, 0, 2, 2, 0, 3},
+    public final static int[][] points = {{3, 0, 2, 2, 0, 3},
             {0, 1, 0, 0, 1, 0},
             {2, 0, 1, 1, 0, 2},
             {0, 1, 0, 0, 1, 0},
             {3, 0, 2, 2, 0, 3}};
-    private final static int ROWS = 5;
-    private final static int COLS = 6;
+    public final static int ROWS = 5;
+    public final static int COLS = 6;
 
     private int score;
     private char[][] projects;

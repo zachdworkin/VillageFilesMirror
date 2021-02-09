@@ -1,5 +1,7 @@
 package village;
 
+import edu.princeton.cs.algs4.StdDraw;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -21,9 +23,11 @@ public class Main {
 
     public static void main(String[] args) {
         Main main = new Main();
+        main.initializeGraphics();
         main.placeInitialProjects();
         for (int turn = 1; turn < 10; turn++) {
             main.takeTurn(turn);
+            main.drawBoard();
         }
         System.out.println("Final score from squares with all three adjacent project types: "
                 + main.board.finalScoring());
@@ -35,6 +39,8 @@ public class Main {
         System.out.println("First roll: " + rolls[0]);
         System.out.println("Second roll: " + rolls[1]);
         System.out.println("Sum of rolls: " + rolls[2]);
+
+        drawRoll();
     }
 
     private void pickRowAndPlaceProject(int col, char proj) {
@@ -43,6 +49,7 @@ public class Main {
         System.out.println(Integer.parseInt(row));
         Location project1 = new Location(Integer.parseInt(row) - 1, col - 1);
         board.addProject(project1, proj);
+        drawProject(project1.getRow(), project1.getCol(), proj);
         System.out.println(board.toString());
     }
 
@@ -195,15 +202,14 @@ public class Main {
 
         int row;
         Scanner input = new Scanner(System.in);
-        if(rolls[2] == 2 || rolls[2] == 12) {
+        if (rolls[2] == 2 || rolls[2] == 12) {
             do {
                 System.out.print("Enter a row (with an empty space) from 1 to 5: ");
                 row = input.nextInt();
             } while (row < 1 || row > 5);
-            System.out.println("Scoring row " + (row + 1) +  " for this round. Score: " + board.scoreRow(row));
-        }
-        else{
-            System.out.println("Scoring row " + (rowFromSum[rolls[2]] + 1) +  " for this round. Score: " + board.scoreRow(rowFromSum[rolls[2]]));
+            System.out.println("Scoring row " + (row + 1) + " for this round. Score: " + board.scoreRow(row));
+        } else {
+            System.out.println("Scoring row " + (rowFromSum[rolls[2]] + 1) + " for this round. Score: " + board.scoreRow(rowFromSum[rolls[2]]));
         }
         System.out.println("Total score is now " + board.getScore());
     }
@@ -229,7 +235,168 @@ public class Main {
             } while (row < 1 || row > 5 || column < 1 || column > 6);
             location = new Location(row - 1, column - 1);
         } while (!board.isEmpty(location));
-
+        drawProject(location.getRow(), location.getCol(), project);
         board.addProject(location, project);
     }
+
+    void initializeGraphics() {
+        StdDraw.enableDoubleBuffering();
+        StdDraw.setXscale(0, 800);
+        StdDraw.setYscale(0, 950);
+        drawBoard();
+    }
+
+    static String[] rowLabels = {null, "3,4", "5,6", "7", "8,9", "10,11"};
+
+    void drawBoard() {
+        StdDraw.clear();
+        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.setFont(new java.awt.Font("Serif", java.awt.Font.PLAIN, 24));
+
+        // Draw vertical grid lines
+        for (int i = 0; i < 800; i += 100) {
+            StdDraw.line(i, 1, i, 600);
+
+        }
+        // Draw horizontal grid lines
+        for (int i = 0; i < 700; i += 100) {
+            StdDraw.line(1, i, 700, i);
+        }
+
+        // Draw labels
+        for (int column = 1; column <= board.COLS; column++) {
+            StdDraw.text(column * 100 + 50, 550, "" + column);
+        }
+        for (int row = 1; row <= board.ROWS; row++) {
+            StdDraw.text(50, 575 - 100 * row, "(" + row + ")");
+            StdDraw.text(50, 525 - 100 * row, rowLabels[row]);
+        }
+
+        // Draw points and projects
+        StdDraw.setPenColor(StdDraw.GRAY);
+        for (int row = 1; row <= board.ROWS; row++) {
+            for (int column = 1; column <= board.COLS; column++) {
+                int points = board.points[row - 1][column - 1];
+                if (points != 0) {
+                    StdDraw.text(column * 100 + 50, 550 - 100 * row, "" + points);
+                }
+                drawProject(row - 1, column - 1, board.getProject(row - 1, column - 1));
+            }
+        }
+
+        drawBonusProjects();
+        drawProjectTypes();
+
+        // Draw title and score
+        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.text(425, 625, "Rolling Village");
+        StdDraw.text(75, 625, "Score: " + board.getScore());
+
+        // Draw roll button
+        StdDraw.setPenColor(StdDraw.RED);
+        StdDraw.filledSquare(750, 50, 50);
+        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.square(750, 50, 50);
+        StdDraw.text(750, 50, "Roll");
+
+        StdDraw.show();
+    }
+
+    /**
+     * Draws a project on the graphics screen.
+     */
+    private void drawProject(int row, int col, char project) {
+        int xOffset = 100 + col * 100;
+        int yOffset = 400 - row * 100;
+
+        if (project == 'H') {
+            double[] x = {25 + xOffset, 75 + xOffset, 75 + xOffset, 50 + xOffset, 25 + xOffset};
+            double[] y = {25 + yOffset, 25 + yOffset, 60 + yOffset, 85 + yOffset, 60 + yOffset};
+            StdDraw.polygon(x, y);
+        }
+        else if(project == '^'){
+            double[] x = {25 + xOffset, 75 + xOffset, 50 + xOffset};
+            double[] y = {25 + yOffset, 25 + yOffset, 85 + yOffset};
+            StdDraw.polygon(x, y);
+        }
+        else if(project == 'O'){
+            StdDraw.circle(xOffset + 50, yOffset + 50, 30);
+        }
+        else if (project == '#') {
+            StdDraw.rectangle(xOffset + 50, yOffset + 50, 30, 30);
+        }
+        StdDraw.show();
+    }
+
+    /**
+     * Draws the currently available bonus projects
+     */
+    private void drawBonusProjects(){
+        StdDraw.setPenColor(Color.BLACK);
+        //Draw Label for available bonus project
+        StdDraw.line(0, 900, 400, 900);
+        StdDraw.text(200, 925, "Available Bonus Projects:");
+
+        for(char project: bonusProjects){
+            if(project == 'H'){
+                double[] x = {25, 75, 75, 50, 25};
+                double[] y = {25 + 800, 25 + 800, 60 + 800, 85 + 800, 60 + 800};
+                StdDraw.polygon(x, y);
+            }
+            else if(project == '^'){
+                double[] x = {25 + 100, 75 + 100, 50 + 100};
+                double[] y = {25 + 800, 25 + 800, 85 + 800};
+                StdDraw.polygon(x, y);
+            }
+            else{
+                StdDraw.circle(200 + 50, 800 + 50, 30);
+            }
+        }
+    }
+
+    /**
+     * Draws the different project types along with their associated dice rolls.
+     */
+    private void drawProjectTypes(){
+
+        //Lake and associated dice
+       StdDraw.picture(575, 700, "3.png", 75, 75);
+       StdDraw.picture(650, 700, "6.png", 75, 75);
+       StdDraw.circle(750, 700, 30);
+
+        //Forest and associated dice
+        StdDraw.picture(575, 800, "2.png", 75, 75);
+        StdDraw.picture(650, 800, "5.png", 75, 75);
+        double[] x = {25 + 700, 75 + 700, 50 + 700};
+        double[] y = {25 + 745, 25 + 745, 85 + 745};
+        StdDraw.polygon(x, y);
+
+        //House and associated dice
+        StdDraw.picture(575, 900, "1.png", 75, 75);
+        StdDraw.picture(650, 900, "4.png", 75, 75);
+        double[] x2 = {25 + 700, 75 + 700, 75 + 700, 50+ 700, 25 + 700};
+        double[] y2 = {25 + 845, 25 + 845, 60 + 845, 85 + 845, 60 + 845};
+        StdDraw.polygon(x2, y2);
+    }
+
+    /**
+     * Draws the dice from the current roll.
+     */
+    private void drawRoll(){
+        StdDraw.setPenColor(Color.BLACK);
+        //Draw Label for available bonus project
+        StdDraw.line(0, 750, 400, 750);
+        StdDraw.text(105, 775, "Current Roll:");
+
+        //Check that dice have been rolled
+        if(rolls[0] == 0){
+            return;
+        }
+        System.out.printf("%d, %d\n", rolls[0], rolls[1]);
+        StdDraw.picture(50, 700, rolls[0] + ".png", 75, 75);
+        StdDraw.picture(125, 700, rolls[1] + ".png", 75, 75);
+
+        StdDraw.show();
+    }
 }
+
