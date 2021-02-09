@@ -105,11 +105,12 @@ public class Main {
      * Checks any user input for validity
      *
      * @param validInputs an ArrayList of valid input string
+     * @param inputType 0 for column input, 1 for row input, and 2 for initial project input
      * @return their input as a character
      */
-    private String checkInput(ArrayList<String> validInputs, int rowCol) {
+    private String checkInput(ArrayList<String> validInputs, int inputType) {
         printSelectables(validInputs);
-        if (rowCol > 1) {
+        if (inputType > 1) {
             while (true) {
                 waitForClick();
                 String usrInpt = "";
@@ -132,7 +133,7 @@ public class Main {
         } else {
             while (true) {
                 getAndTranslateClick();
-                String usrInpt = "" + (int) mouseClick[rowCol];
+                String usrInpt = "" + (int) mouseClick[inputType];
                 if (isClickOnBoard() && validInputs.contains(usrInpt)) {
                     return usrInpt;
                 } else {
