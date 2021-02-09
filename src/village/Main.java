@@ -257,7 +257,7 @@ public class Main {
 
     void initializeGraphics() {
         StdDraw.enableDoubleBuffering();
-        StdDraw.setXscale(0, 800);
+        StdDraw.setXscale(0, 700);
         StdDraw.setYscale(0, 950);
         drawBoard();
     }
@@ -307,13 +307,6 @@ public class Main {
         StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.text(425, 625, "Rolling Village");
         StdDraw.text(75, 625, "Score: " + board.getScore());
-
-        // Draw roll button
-        StdDraw.setPenColor(StdDraw.RED);
-        StdDraw.filledSquare(750, 50, 50);
-        StdDraw.setPenColor(StdDraw.BLACK);
-        StdDraw.square(750, 50, 50);
-        StdDraw.text(750, 50, "Roll");
 
         StdDraw.show();
     }
@@ -371,16 +364,19 @@ public class Main {
 
         for(char project: bonusProjects){
             if(project == 'H'){
+                StdDraw.setPenColor(StdDraw.RED);
                 double[] x = {25, 75, 75, 50, 25};
                 double[] y = {25 + 800, 25 + 800, 60 + 800, 85 + 800, 60 + 800};
                 StdDraw.polygon(x, y);
             }
             else if(project == '^'){
+                StdDraw.setPenColor(StdDraw.GREEN);
                 double[] x = {25 + 100, 75 + 100, 50 + 100};
                 double[] y = {25 + 800, 25 + 800, 85 + 800};
                 StdDraw.polygon(x, y);
             }
             else{
+                StdDraw.setPenColor(StdDraw.BLUE);
                 StdDraw.circle(200 + 50, 800 + 50, 30);
             }
         }
@@ -422,22 +418,25 @@ public class Main {
     private void drawProjectTypes(){
 
         //Lake and associated dice
-       StdDraw.picture(575, 700, "3.png", 75, 75);
-       StdDraw.picture(650, 700, "6.png", 75, 75);
-       StdDraw.circle(750, 700, 30);
+       StdDraw.picture(475, 700, "3.png", 75, 75);
+       StdDraw.picture(550, 700, "6.png", 75, 75);
+       StdDraw.setPenColor(StdDraw.BLUE);
+       StdDraw.circle(650, 700, 30);
 
         //Forest and associated dice
-        StdDraw.picture(575, 800, "2.png", 75, 75);
-        StdDraw.picture(650, 800, "5.png", 75, 75);
-        double[] x = {25 + 700, 75 + 700, 50 + 700};
+        StdDraw.picture(475, 800, "2.png", 75, 75);
+        StdDraw.picture(550, 800, "5.png", 75, 75);
+        double[] x = {25 + 600, 75 + 600, 50 + 600};
         double[] y = {25 + 745, 25 + 745, 85 + 745};
+        StdDraw.setPenColor(StdDraw.GREEN);
         StdDraw.polygon(x, y);
 
         //House and associated dice
-        StdDraw.picture(575, 900, "1.png", 75, 75);
-        StdDraw.picture(650, 900, "4.png", 75, 75);
-        double[] x2 = {25 + 700, 75 + 700, 75 + 700, 50+ 700, 25 + 700};
+        StdDraw.picture(475, 900, "1.png", 75, 75);
+        StdDraw.picture(550, 900, "4.png", 75, 75);
+        double[] x2 = {25 + 600, 75 + 600, 75 + 600, 50 + 600, 25 + 600};
         double[] y2 = {25 + 845, 25 + 845, 60 + 845, 85 + 845, 60 + 845};
+        StdDraw.setPenColor(StdDraw.RED);
         StdDraw.polygon(x2, y2);
     }
 
