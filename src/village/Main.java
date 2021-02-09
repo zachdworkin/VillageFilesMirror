@@ -39,6 +39,8 @@ public class Main {
         System.out.println("First roll: " + rolls[0]);
         System.out.println("Second roll: " + rolls[1]);
         System.out.println("Sum of rolls: " + rolls[2]);
+
+        drawRoll();
     }
 
     private void pickRowAndPlaceProject(int col, char proj) {
@@ -292,10 +294,10 @@ public class Main {
 
         // Draw roll button
         StdDraw.setPenColor(StdDraw.RED);
-        StdDraw.filledSquare(750, 250, 50);
+        StdDraw.filledSquare(750, 50, 50);
         StdDraw.setPenColor(StdDraw.BLACK);
-        StdDraw.square(750, 250, 50);
-        StdDraw.text(750, 250, "Roll");
+        StdDraw.square(750, 50, 50);
+        StdDraw.text(750, 50, "Roll");
 
         StdDraw.show();
     }
@@ -375,6 +377,21 @@ public class Main {
         double[] x2 = {25 + 700, 75 + 700, 75 + 700, 50+ 700, 25 + 700};
         double[] y2 = {25 + 845, 25 + 845, 60 + 845, 85 + 845, 60 + 845};
         StdDraw.polygon(x2, y2);
+    }
+
+    /**
+     * Draws the dice from the current roll.
+     */
+    private void drawRoll(){
+        StdDraw.setPenColor(Color.BLACK);
+        //Draw Label for available bonus project
+        StdDraw.line(0, 750, 400, 750);
+        StdDraw.text(105, 775, "Current Roll:");
+        System.out.printf("%d, %d\n", rolls[0], rolls[1]);
+        StdDraw.picture(50, 700, rolls[0] + ".png", 75, 75);
+        StdDraw.picture(125, 700, rolls[1] + ".png", 75, 75);
+
+        StdDraw.show();
     }
 }
 
