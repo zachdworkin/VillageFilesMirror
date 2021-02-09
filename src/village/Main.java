@@ -38,9 +38,9 @@ public class Main {
 
     private void getRolls() {
         rolls = Dice.rollTwice();
-        System.out.println("First roll: " + rolls[0]);
-        System.out.println("Second roll: " + rolls[1]);
-        System.out.println("Sum of rolls: " + rolls[2]);
+//        System.out.println("First roll: " + rolls[0]);
+//        System.out.println("Second roll: " + rolls[1]);
+//        System.out.println("Sum of rolls: " + rolls[2]);
 
         drawRoll();
     }
@@ -110,7 +110,6 @@ public class Main {
     private String checkInput(ArrayList<String> validInputs, int rowCol) {
         printSelectables(validInputs);
         if (rowCol > 1) {
-            Scanner input = new Scanner(System.in);
             while (true) {
                 waitForClick();
                 String usrInpt = "";
@@ -242,11 +241,22 @@ public class Main {
     private void bonusPhase() {
         System.out.println("Bonus phase. You get to draw an additional project in any (empty) space");
         Scanner input = new Scanner(System.in);
-        char project;
+        char project = '-';
         do {
             System.out.print("Enter what project you want to build: ");
-            project = input.next().charAt(0);
+            waitForClick();
+            if (mouseClick[1] > 825 && mouseClick[1] < 885) {
+                if (mouseClick[0] > 25 && mouseClick[0] < 75) {
+                    project = 'H';
+                } else if (mouseClick[0] > 125 && mouseClick[0] < 175) {
+                    project = '^';
+                } else if (mouseClick[0] > 220 && mouseClick[0] < 280) {
+                    project = 'O';
+                }
+            }
         } while (!bonusProjects.contains(project));
+
+
         bonusProjects.remove(project);
 
         System.out.println("In which row and column do you want to build " + project + "?");
