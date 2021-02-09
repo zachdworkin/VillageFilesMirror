@@ -240,7 +240,7 @@ public class Main {
     void initializeGraphics() {
         StdDraw.enableDoubleBuffering();
         StdDraw.setXscale(0, 800);
-        StdDraw.setYscale(0, 700);
+        StdDraw.setYscale(0, 800);
         drawBoard();
     }
 
@@ -278,6 +278,8 @@ public class Main {
             }
         }
 
+        drawBonusProjects();
+
         // Draw title and score
         StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.text(425, 625, "Rolling Village");
@@ -296,7 +298,7 @@ public class Main {
     /**
      * Draws a project on the graphics screen.
      */
-    private static void drawProject(int row, int col, char project) {
+    private void drawProject(int row, int col, char project) {
         int xOffset = 100 + col * 100;
         int yOffset = 400 - row * 100;
 
@@ -317,6 +319,27 @@ public class Main {
             StdDraw.rectangle(xOffset + 50, yOffset + 50, 30, 30);
         }
         StdDraw.show();
+    }
+
+    /**
+     * Draws the currently available bonus projects
+     */
+    private void drawBonusProjects(){
+        for(char project: bonusProjects){
+            if(project == 'H'){
+                double[] x = {25, 75, 75, 50, 25};
+                double[] y = {25 + 700, 25 + 700, 60 + 700, 85 + 700, 60 + 700};
+                StdDraw.polygon(x, y);
+            }
+            else if(project == '^'){
+                double[] x = {25 + 100, 75 + 100, 50 + 100};
+                double[] y = {25 + 700, 25 + 700, 85 + 700};
+                StdDraw.polygon(x, y);
+            }
+            else{
+                StdDraw.circle(200 + 50, 700 + 50, 30);
+            }
+        }
     }
 }
 
