@@ -240,7 +240,7 @@ public class Main {
     void initializeGraphics() {
         StdDraw.enableDoubleBuffering();
         StdDraw.setXscale(0, 800);
-        StdDraw.setYscale(0, 800);
+        StdDraw.setYscale(0, 900);
         drawBoard();
     }
 
@@ -251,11 +251,20 @@ public class Main {
         StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.setFont(new java.awt.Font("Serif", java.awt.Font.PLAIN, 24));
 
-        // Draw grid lines
+        // Draw vertical grid lines
         for (int i = 0; i < 800; i += 100) {
             StdDraw.line(i, 1, i, 600);
+
+        }
+        // Draw horizontal grid lines
+        for (int i = 0; i < 700; i += 100) {
             StdDraw.line(1, i, 700, i);
         }
+
+
+        //Draw Label for available bonus project
+        StdDraw.line(0, 800, 400, 800);
+        StdDraw.text(200, 825, "Available Bonus Projects:");
 
         // Draw labels
         for (int column = 1; column <= board.COLS; column++) {
