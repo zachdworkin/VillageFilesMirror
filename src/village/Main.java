@@ -240,7 +240,7 @@ public class Main {
     void initializeGraphics() {
         StdDraw.enableDoubleBuffering();
         StdDraw.setXscale(0, 800);
-        StdDraw.setYscale(0, 900);
+        StdDraw.setYscale(0, 950);
         drawBoard();
     }
 
@@ -260,11 +260,6 @@ public class Main {
         for (int i = 0; i < 700; i += 100) {
             StdDraw.line(1, i, 700, i);
         }
-
-
-        //Draw Label for available bonus project
-        StdDraw.line(0, 800, 400, 800);
-        StdDraw.text(200, 825, "Available Bonus Projects:");
 
         // Draw labels
         for (int column = 1; column <= board.COLS; column++) {
@@ -288,6 +283,7 @@ public class Main {
         }
 
         drawBonusProjects();
+        drawProjectTypes();
 
         // Draw title and score
         StdDraw.setPenColor(StdDraw.BLACK);
@@ -334,21 +330,51 @@ public class Main {
      * Draws the currently available bonus projects
      */
     private void drawBonusProjects(){
+        StdDraw.setPenColor(Color.BLACK);
+        //Draw Label for available bonus project
+        StdDraw.line(0, 900, 400, 900);
+        StdDraw.text(200, 925, "Available Bonus Projects:");
+
         for(char project: bonusProjects){
             if(project == 'H'){
                 double[] x = {25, 75, 75, 50, 25};
-                double[] y = {25 + 700, 25 + 700, 60 + 700, 85 + 700, 60 + 700};
+                double[] y = {25 + 800, 25 + 800, 60 + 800, 85 + 800, 60 + 800};
                 StdDraw.polygon(x, y);
             }
             else if(project == '^'){
                 double[] x = {25 + 100, 75 + 100, 50 + 100};
-                double[] y = {25 + 700, 25 + 700, 85 + 700};
+                double[] y = {25 + 800, 25 + 800, 85 + 800};
                 StdDraw.polygon(x, y);
             }
             else{
-                StdDraw.circle(200 + 50, 700 + 50, 30);
+                StdDraw.circle(200 + 50, 800 + 50, 30);
             }
         }
+    }
+
+    /**
+     * Draws the different project types along with their associated dice rolls.
+     */
+    private void drawProjectTypes(){
+
+        //Lake and associated dice
+       StdDraw.picture(575, 700, "3.png", 75, 75);
+       StdDraw.picture(650, 700, "6.png", 75, 75);
+       StdDraw.circle(750, 700, 30);
+
+        //Forest and associated dice
+        StdDraw.picture(575, 800, "2.png", 75, 75);
+        StdDraw.picture(650, 800, "5.png", 75, 75);
+        double[] x = {25 + 700, 75 + 700, 50 + 700};
+        double[] y = {25 + 745, 25 + 745, 85 + 745};
+        StdDraw.polygon(x, y);
+
+        //House and associated dice
+        StdDraw.picture(575, 900, "1.png", 75, 75);
+        StdDraw.picture(650, 900, "4.png", 75, 75);
+        double[] x2 = {25 + 700, 75 + 700, 75 + 700, 50+ 700, 25 + 700};
+        double[] y2 = {25 + 845, 25 + 845, 60 + 845, 85 + 845, 60 + 845};
+        StdDraw.polygon(x2, y2);
     }
 }
 
