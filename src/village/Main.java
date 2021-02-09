@@ -16,10 +16,12 @@ public class Main {
     private Dice dice;
     public Board board;
     private Set<Character> bonusProjects;
+    public double[] mouseClick;
 
     public Main() {
         board = new Board();
         bonusProjects = new TreeSet<>(Arrays.asList('H', '^', 'O'));
+        mouseClick = new double[2];
     }
 
     public static void main(String[] args) {
@@ -34,13 +36,14 @@ public class Main {
         System.out.println("Final score from squares with all three adjacent project types: "
                 + main.board.finalScoring());
         System.out.println("Final score of the game: " + main.board.getScore());
+        main.drawBoard();
     }
 
     /**
      * Sets the seed. If the player does not choose a seed, they get a random seed.
      */
     public void setSeed(){
-        System.out.println("Choose a seed. If you don't want to choose a seed, enter '-1'.");
+        System.out.println("Enter an integer seed. If you don't want to choose a seed, enter '-1'.");
         Scanner in = new Scanner(System.in);
         int seed = in.nextInt();
         if (seed != -1){
@@ -52,21 +55,16 @@ public class Main {
 
     private void getRolls() {
         rolls = dice.rollTwice();
-        System.out.println("First roll: " + rolls[0]);
-        System.out.println("Second roll: " + rolls[1]);
-        System.out.println("Sum of rolls: " + rolls[2]);
-
         drawRoll();
     }
 
     private void pickRowAndPlaceProject(int col, char proj) {
         System.out.println("In which row do want to build " + proj + "?");
-        String row = checkInput(getValidRowInput(col - 1));
+        String row = checkInput(getValidRowInput(col - 1), 1);
         System.out.println(Integer.parseInt(row));
         Location project1 = new Location(Integer.parseInt(row) - 1, col - 1);
         board.addProject(project1, proj);
         drawProject(project1.getRow(), project1.getCol(), proj);
-        System.out.println(board.toString());
     }
 
     /**
@@ -118,20 +116,42 @@ public class Main {
     /**
      * Checks any user input for validity
      *
-     * @param validInputs an ArrayList of valid input strings
+     * @param validInputs an ArrayList of valid input string
+     * @param inputType 0 for column input, 1 for row input, and 2 for initial project input
      * @return their input as a character
      */
-    private String checkInput(ArrayList<String> validInputs) {
+    private String checkInput(ArrayList<String> validInputs, int inputType) {
         printSelectables(validInputs);
-        Scanner input = new Scanner(System.in);
-
-        while (true) {
-            String usrInpt = input.next();
-            if (validInputs.contains(usrInpt)) {
-                return usrInpt;
-            } else {
-                System.out.println("Invalid input, please select an available input");
-                printSelectables(validInputs);
+        if (inputType > 1) {
+            while (true) {
+                waitForClick();
+                String usrInpt = "";
+                if (mouseClick[0] > 625 && mouseClick[0] < 675) {
+                    if (mouseClick[1] > 870 && mouseClick[1] < 905) {
+                        usrInpt = "H";
+                    } else if (mouseClick[1] > 770 && mouseClick[1] < 830) {
+                        usrInpt = "^";
+                    } else if (mouseClick[1] > 670 && mouseClick[1] < 730) {
+                        usrInpt = "O";
+                    }
+                }
+                if (validInputs.contains(usrInpt)) {
+                    return usrInpt;
+                } else {
+                    System.out.println("Invalid input, please select an available input");
+                    printSelectables(validInputs);
+                }
+            }
+        } else {
+            while (true) {
+                getAndTranslateClick();
+                String usrInpt = "" + (int) mouseClick[inputType];
+                if (isClickOnBoard() && validInputs.contains(usrInpt)) {
+                    return usrInpt;
+                } else {
+                    System.out.println("Invalid input, please select an available input");
+                    printSelectables(validInputs);
+                }
             }
         }
     }
@@ -142,16 +162,15 @@ public class Main {
         System.out.println("You start with two projects, select the first project to " +
                 "place in column " + rolls[0]);
 
-        String proj = checkInput(availablePreProjects);
+        String proj = checkInput(availablePreProjects, 2);
         availablePreProjects.remove(availablePreProjects.indexOf(proj));
         System.out.println("You get to place a '" + proj + "' in column " + rolls[0] +
                 ". Select row to place it in.");
-        System.out.println(board.toString());
 
         pickRowAndPlaceProject(rolls[0], proj.toCharArray()[0]);
 
         System.out.println("Select the second project to place in column " + rolls[1]);
-        proj = checkInput(availablePreProjects);
+        proj = checkInput(availablePreProjects, 2);
         pickRowAndPlaceProject(rolls[1], proj.toCharArray()[0]);
     }
 
@@ -176,7 +195,7 @@ public class Main {
             ArrayList<String> validInpts = new ArrayList();
             validInpts.add(Integer.toString(playableCol.get(0) + 1));
             validInpts.add(Integer.toString(playableCol.get(1) + 1));
-            selectedCol = Integer.parseInt(checkInput(validInpts));
+            selectedCol = Integer.parseInt(checkInput(validInpts, 0));
         }
 
         pickRowAndPlaceProject(selectedCol, projects[rolls[0]]);
@@ -197,33 +216,31 @@ public class Main {
                 ArrayList<String> validInpts = new ArrayList();
                 validInpts.add(Integer.toString(playableCol.get(0) + 1));
                 validInpts.add(Integer.toString(playableCol.get(1) + 1));
-                selectedCol2 = Integer.parseInt(checkInput(validInpts));
+                selectedCol2 = Integer.parseInt(checkInput(validInpts, 0));
             }
         }
 
         if (square) {
             System.out.println("You get to place a # anywhere.");
             System.out.println("In which column do you want to build #?");
-            String column = checkInput(getValidColInput());
+            String column = checkInput(getValidColInput(), 0);
             pickRowAndPlaceProject(Integer.parseInt(column), '#');
         } else {
             pickRowAndPlaceProject(selectedCol2, projects[rolls[1]]);
         }
-        System.out.println(board.toString());
 
         if (turn % 3 == 0) {
             bonusPhase();
-            System.out.println(board.toString());
         }
 
         int row;
-        Scanner input = new Scanner(System.in);
         if (rolls[2] == 2 || rolls[2] == 12) {
             do {
-                System.out.print("Enter a row (with an empty space) from 1 to 5: ");
-                row = input.nextInt();
-            } while (row < 1 || row > 5);
-            System.out.println("Scoring row " + (row + 1) + " for this round. Score: " + board.scoreRow(row));
+                System.out.println("Select a row to score.");
+                getAndTranslateClick();
+                row = (int) mouseClick[1];
+            } while (row < 1 || row > board.ROWS);
+            System.out.println("Scoring row " + row + " for this round. Score: " + board.scoreRow(row - 1));
         } else {
             System.out.println("Scoring row " + (rowFromSum[rolls[2]] + 1) + " for this round. Score: " + board.scoreRow(rowFromSum[rolls[2]]));
         }
@@ -232,12 +249,22 @@ public class Main {
 
     private void bonusPhase() {
         System.out.println("Bonus phase. You get to draw an additional project in any (empty) space");
-        Scanner input = new Scanner(System.in);
-        char project;
+        char project = '-';
         do {
-            System.out.print("Enter what project you want to build: ");
-            project = input.next().charAt(0);
+            System.out.println("Select what project you want to build.");
+            waitForClick();
+            if (mouseClick[1] > 825 && mouseClick[1] < 885) {
+                if (mouseClick[0] > 25 && mouseClick[0] < 75) {
+                    project = 'H';
+                } else if (mouseClick[0] > 125 && mouseClick[0] < 175) {
+                    project = '^';
+                } else if (mouseClick[0] > 220 && mouseClick[0] < 280) {
+                    project = 'O';
+                }
+            }
         } while (!bonusProjects.contains(project));
+
+
         bonusProjects.remove(project);
 
         System.out.println("In which row and column do you want to build " + project + "?");
@@ -245,10 +272,11 @@ public class Main {
         int row, column;
         do {
             do {
-                System.out.print("Enter the row (from 1 to 5) and column (from 1 to 6): ");
-                row = input.nextInt();
-                column = input.nextInt();
-            } while (row < 1 || row > 5 || column < 1 || column > 6);
+                System.out.println("Select where you want to build.");
+                getAndTranslateClick();
+                row = (int) mouseClick[1];
+                column = (int) mouseClick[0];
+            } while (row < 1 || row > board.ROWS || column < 1 || column > board.COLS);
             location = new Location(row - 1, column - 1);
         } while (!board.isEmpty(location));
         drawProject(location.getRow(), location.getCol(), project);
@@ -257,7 +285,7 @@ public class Main {
 
     void initializeGraphics() {
         StdDraw.enableDoubleBuffering();
-        StdDraw.setXscale(0, 800);
+        StdDraw.setXscale(0, 700);
         StdDraw.setYscale(0, 950);
         drawBoard();
     }
@@ -289,11 +317,11 @@ public class Main {
         }
 
         // Draw points and projects
-        StdDraw.setPenColor(StdDraw.GRAY);
         for (int row = 1; row <= board.ROWS; row++) {
             for (int column = 1; column <= board.COLS; column++) {
                 int points = board.points[row - 1][column - 1];
                 if (points != 0) {
+                    StdDraw.setPenColor(StdDraw.GRAY);
                     StdDraw.text(column * 100 + 50, 550 - 100 * row, "" + points);
                 }
                 drawProject(row - 1, column - 1, board.getProject(row - 1, column - 1));
@@ -307,14 +335,6 @@ public class Main {
         StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.text(425, 625, "Rolling Village");
         StdDraw.text(75, 625, "Score: " + board.getScore());
-
-        // Draw roll button
-        StdDraw.setPenColor(StdDraw.RED);
-        StdDraw.filledSquare(750, 50, 50);
-        StdDraw.setPenColor(StdDraw.BLACK);
-        StdDraw.square(750, 50, 50);
-        StdDraw.text(750, 50, "Roll");
-
         StdDraw.text(300, 700, "Seed: " + dice.getSeed());
 
         StdDraw.show();
@@ -328,22 +348,38 @@ public class Main {
         int yOffset = 400 - row * 100;
 
         if (project == 'H') {
+            StdDraw.setPenColor(StdDraw.RED);
             double[] x = {25 + xOffset, 75 + xOffset, 75 + xOffset, 50 + xOffset, 25 + xOffset};
             double[] y = {25 + yOffset, 25 + yOffset, 60 + yOffset, 85 + yOffset, 60 + yOffset};
             StdDraw.polygon(x, y);
         }
         else if(project == '^'){
+            StdDraw.setPenColor(StdDraw.GREEN);
             double[] x = {25 + xOffset, 75 + xOffset, 50 + xOffset};
             double[] y = {25 + yOffset, 25 + yOffset, 85 + yOffset};
             StdDraw.polygon(x, y);
         }
         else if(project == 'O'){
+            StdDraw.setPenColor(StdDraw.BLUE);
             StdDraw.circle(xOffset + 50, yOffset + 50, 30);
         }
         else if (project == '#') {
+            StdDraw.setPenColor(StdDraw.MAGENTA);
             StdDraw.rectangle(xOffset + 50, yOffset + 50, 30, 30);
         }
         StdDraw.show();
+    }
+
+    public void waitForClick() {
+        while (!StdDraw.isMousePressed()) {
+            // Wait for mouse press
+        }
+
+        mouseClick[0] = StdDraw.mouseX();
+        mouseClick[1] = StdDraw.mouseY();
+        while (StdDraw.isMousePressed()) {
+            // Wait for mouse release
+        }
     }
 
     /**
@@ -357,43 +393,72 @@ public class Main {
 
         for(char project: bonusProjects){
             if(project == 'H'){
+                StdDraw.setPenColor(StdDraw.RED);
                 double[] x = {25, 75, 75, 50, 25};
                 double[] y = {25 + 800, 25 + 800, 60 + 800, 85 + 800, 60 + 800};
                 StdDraw.polygon(x, y);
             }
             else if(project == '^'){
+                StdDraw.setPenColor(StdDraw.GREEN);
                 double[] x = {25 + 100, 75 + 100, 50 + 100};
                 double[] y = {25 + 800, 25 + 800, 85 + 800};
                 StdDraw.polygon(x, y);
             }
             else{
+                StdDraw.setPenColor(StdDraw.BLUE);
                 StdDraw.circle(200 + 50, 800 + 50, 30);
             }
         }
     }
 
     /**
+     * Translate click from graphics to array indices
+     */
+    public void translateClick() {
+        mouseClick[0] = Math.floor(mouseClick[0] / 100);
+        mouseClick[1] = board.ROWS - Math.floor(mouseClick[1] / 100);
+    }
+
+    /**
+     * Bread and butter click call.
+     */
+    private void getAndTranslateClick() {
+        waitForClick();
+        translateClick();
+    }
+
+    /**
+     * Returns whether the user clicked on the board.
+     */
+    public boolean isClickOnBoard() {
+                return ((mouseClick[0] <= board.COLS) && (mouseClick[0] > 0) &&
+                        (mouseClick[1] <= board.ROWS) && (mouseClick[1] > 0));
+            }
+    /**
      * Draws the different project types along with their associated dice rolls.
      */
     private void drawProjectTypes(){
 
-        //Lake and associated dice
-       StdDraw.picture(575, 700, "3.png", 75, 75);
-       StdDraw.picture(650, 700, "6.png", 75, 75);
-       StdDraw.circle(750, 700, 30);
+        // Lake and associated dice
+       StdDraw.picture(475, 700, "3.png", 75, 75);
+       StdDraw.picture(550, 700, "6.png", 75, 75);
+       StdDraw.setPenColor(StdDraw.BLUE);
+       StdDraw.circle(650, 700, 30);
 
-        //Forest and associated dice
-        StdDraw.picture(575, 800, "2.png", 75, 75);
-        StdDraw.picture(650, 800, "5.png", 75, 75);
-        double[] x = {25 + 700, 75 + 700, 50 + 700};
+        // Forest and associated dice
+        StdDraw.picture(475, 800, "2.png", 75, 75);
+        StdDraw.picture(550, 800, "5.png", 75, 75);
+        double[] x = {25 + 600, 75 + 600, 50 + 600};
         double[] y = {25 + 745, 25 + 745, 85 + 745};
+        StdDraw.setPenColor(StdDraw.GREEN);
         StdDraw.polygon(x, y);
 
-        //House and associated dice
-        StdDraw.picture(575, 900, "1.png", 75, 75);
-        StdDraw.picture(650, 900, "4.png", 75, 75);
-        double[] x2 = {25 + 700, 75 + 700, 75 + 700, 50+ 700, 25 + 700};
+        // House and associated dice
+        StdDraw.picture(475, 900, "1.png", 75, 75);
+        StdDraw.picture(550, 900, "4.png", 75, 75);
+        double[] x2 = {25 + 600, 75 + 600, 75 + 600, 50 + 600, 25 + 600};
         double[] y2 = {25 + 845, 25 + 845, 60 + 845, 85 + 845, 60 + 845};
+        StdDraw.setPenColor(StdDraw.RED);
         StdDraw.polygon(x2, y2);
     }
 
