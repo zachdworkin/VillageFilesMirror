@@ -227,11 +227,11 @@ public class Main {
         Scanner input = new Scanner(System.in);
         if (rolls[2] == 2 || rolls[2] == 12) {
             do {
-                System.out.print("Enter a row (with an empty space) from 1 to 5: ");
+                System.out.print("Select a row with an empty space.");
                 getAndTranslateClick();
                 row = (int) mouseClick[1];
-            } while (row < 1 || row > board.ROWS || mouseClick[0] < 7);
-            System.out.println("Scoring row " + (row + 1) + " for this round. Score: " + board.scoreRow(row));
+            } while (row < 1 || row > board.ROWS);
+            System.out.println("Scoring row " + row + " for this round. Score: " + board.scoreRow(row - 1));
         } else {
             System.out.println("Scoring row " + (rowFromSum[rolls[2]] + 1) + " for this round. Score: " + board.scoreRow(rowFromSum[rolls[2]]));
         }
@@ -243,7 +243,7 @@ public class Main {
         Scanner input = new Scanner(System.in);
         char project = '-';
         do {
-            System.out.print("Enter what project you want to build: ");
+            System.out.print("Select what project you want to build.");
             waitForClick();
             if (mouseClick[1] > 825 && mouseClick[1] < 885) {
                 if (mouseClick[0] > 25 && mouseClick[0] < 75) {
@@ -264,7 +264,7 @@ public class Main {
         int row, column;
         do {
             do {
-                System.out.print("Enter the row (from 1 to 5) and column (from 1 to 6): ");
+                System.out.print("Select the row and column.");
                 getAndTranslateClick();
                 row = (int) mouseClick[1];
                 column = (int) mouseClick[0];
