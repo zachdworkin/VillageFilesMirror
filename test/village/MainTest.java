@@ -78,4 +78,39 @@ public class MainTest {
         assertTrue(validInpt.contains("5"));
         assertTrue(validInpt.contains("6"));
     }
+
+    @Test
+    void clickTranslatesFromGraphicsToArrayProperly() {
+        main.mouseClick[0] = 271.4;
+        main.mouseClick[1] = 384.3;
+        main.translateClick();
+        assertEquals(2, main.mouseClick[0]);
+        assertEquals(2, main.mouseClick[1]);
+
+        main.mouseClick[0] = 650;
+        main.mouseClick[1] = 123.8;
+        main.translateClick();
+        assertEquals(6, main.mouseClick[0]);
+        assertEquals(4, main.mouseClick[1]);
+    }
+
+    @Test
+    void clickProperlyIdentifiedAsOnTheBoard() {
+        main.mouseClick[0] = 271.4;
+        main.mouseClick[1] = 384.3;
+        main.translateClick();
+        assertTrue(main.clickIsOnBoard());
+    }
+
+    @Test
+    void clickProperlyIdentifiedAsOffTheBoard() {
+        main.mouseClick[0] = 799;
+        main.mouseClick[1] = 384.3;
+        main.translateClick();
+        assertFalse(main.clickIsOnBoard());
+        main.mouseClick[0] = 250;
+        main.mouseClick[1] = 799;
+        main.translateClick();
+        assertFalse(main.clickIsOnBoard());
+    }
 }

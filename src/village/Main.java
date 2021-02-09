@@ -15,7 +15,7 @@ public class Main {
     private int[] rolls = new int[2];
     public Board board;
     private Set<Character> bonusProjects;
-    private double[] mouseClick;
+    public double[] mouseClick;
 
     public Main() {
         board = new Board();
@@ -45,12 +45,12 @@ public class Main {
 
     private void pickRowAndPlaceProject(int col, char proj) {
         System.out.println("In which row do want to build " + proj + "?");
-        String row = checkInput(getValidRowInput(col - 1));
+        String row = checkInput(getValidRowInput(col - 1), 1);
         System.out.println(Integer.parseInt(row));
         Location project1 = new Location(Integer.parseInt(row) - 1, col - 1);
         board.addProject(project1, proj);
         drawProject(project1.getRow(), project1.getCol(), proj);
-        System.out.println(board.toString());
+        //System.out.println(board.toString());
     }
 
     /**
@@ -102,20 +102,32 @@ public class Main {
     /**
      * Checks any user input for validity
      *
-     * @param validInputs an ArrayList of valid input strings
+     * @param validInputs an ArrayList of valid input string
      * @return their input as a character
      */
-    private String checkInput(ArrayList<String> validInputs) {
+    private String checkInput(ArrayList<String> validInputs, int rowCol) {
         printSelectables(validInputs);
-        Scanner input = new Scanner(System.in);
-
-        while (true) {
-            String usrInpt = input.next();
-            if (validInputs.contains(usrInpt)) {
-                return usrInpt;
-            } else {
-                System.out.println("Invalid input, please select an available input");
-                printSelectables(validInputs);
+        if (rowCol > 1) {
+            Scanner input = new Scanner(System.in);
+            while (true) {
+                String usrInpt = input.next();
+                if (validInputs.contains(usrInpt)) {
+                    return usrInpt;
+                } else {
+                    System.out.println("Invalid input, please select an available input");
+                    printSelectables(validInputs);
+                }
+            }
+        } else {
+            while (true) {
+                getAndTranslateClick();
+                String usrInpt = "" + (int) mouseClick[rowCol];
+                if (clickIsOnBoard() && validInputs.contains(usrInpt)) {
+                    return usrInpt;
+                } else {
+                    System.out.println("Invalid input, please select an available input");
+                    printSelectables(validInputs);
+                }
             }
         }
     }
@@ -126,16 +138,16 @@ public class Main {
         System.out.println("You start with two projects, select the first project to " +
                 "place in column " + rolls[0]);
 
-        String proj = checkInput(availablePreProjects);
+        String proj = checkInput(availablePreProjects, 2);
         availablePreProjects.remove(availablePreProjects.indexOf(proj));
         System.out.println("You get to place a '" + proj + "' in column " + rolls[0] +
                 ". Select row to place it in.");
-        System.out.println(board.toString());
+        //System.out.println(board.toString());
 
         pickRowAndPlaceProject(rolls[0], proj.toCharArray()[0]);
 
         System.out.println("Select the second project to place in column " + rolls[1]);
-        proj = checkInput(availablePreProjects);
+        proj = checkInput(availablePreProjects, 2);
         pickRowAndPlaceProject(rolls[1], proj.toCharArray()[0]);
     }
 
@@ -160,7 +172,7 @@ public class Main {
             ArrayList<String> validInpts = new ArrayList();
             validInpts.add(Integer.toString(playableCol.get(0) + 1));
             validInpts.add(Integer.toString(playableCol.get(1) + 1));
-            selectedCol = Integer.parseInt(checkInput(validInpts));
+            selectedCol = Integer.parseInt(checkInput(validInpts, 0));
         }
 
         pickRowAndPlaceProject(selectedCol, projects[rolls[0]]);
@@ -181,23 +193,23 @@ public class Main {
                 ArrayList<String> validInpts = new ArrayList();
                 validInpts.add(Integer.toString(playableCol.get(0) + 1));
                 validInpts.add(Integer.toString(playableCol.get(1) + 1));
-                selectedCol2 = Integer.parseInt(checkInput(validInpts));
+                selectedCol2 = Integer.parseInt(checkInput(validInpts, 0));
             }
         }
 
         if (square) {
             System.out.println("You get to place a # anywhere.");
             System.out.println("In which column do you want to build #?");
-            String column = checkInput(getValidColInput());
+            String column = checkInput(getValidColInput(), 0);
             pickRowAndPlaceProject(Integer.parseInt(column), '#');
         } else {
             pickRowAndPlaceProject(selectedCol2, projects[rolls[1]]);
         }
-        System.out.println(board.toString());
+        //System.out.println(board.toString());
 
         if (turn % 3 == 0) {
             bonusPhase();
-            System.out.println(board.toString());
+            //System.out.println(board.toString());
         }
 
         int row;
@@ -205,8 +217,9 @@ public class Main {
         if (rolls[2] == 2 || rolls[2] == 12) {
             do {
                 System.out.print("Enter a row (with an empty space) from 1 to 5: ");
-                row = input.nextInt();
-            } while (row < 1 || row > 5);
+                getAndTranslateClick();
+                row = (int) mouseClick[1];
+            } while (row < 1 || row > board.ROWS || mouseClick[0] < 7);
             System.out.println("Scoring row " + (row + 1) + " for this round. Score: " + board.scoreRow(row));
         } else {
             System.out.println("Scoring row " + (rowFromSum[rolls[2]] + 1) + " for this round. Score: " + board.scoreRow(rowFromSum[rolls[2]]));
@@ -230,9 +243,10 @@ public class Main {
         do {
             do {
                 System.out.print("Enter the row (from 1 to 5) and column (from 1 to 6): ");
-                row = input.nextInt();
-                column = input.nextInt();
-            } while (row < 1 || row > 5 || column < 1 || column > 6);
+                getAndTranslateClick();
+                row = (int) mouseClick[1];
+                column = (int) mouseClick[0];
+            } while (row < 1 || row > board.ROWS || column < 1 || column > board.COLS);
             location = new Location(row - 1, column - 1);
         } while (!board.isEmpty(location));
         drawProject(location.getRow(), location.getCol(), project);
@@ -269,11 +283,11 @@ public class Main {
         }
 
         // Draw points and projects
-        StdDraw.setPenColor(StdDraw.GRAY);
         for (int row = 1; row <= board.ROWS; row++) {
             for (int column = 1; column <= board.COLS; column++) {
                 int points = board.points[row - 1][column - 1];
                 if (points != 0) {
+                    StdDraw.setPenColor(StdDraw.GRAY);
                     StdDraw.text(column * 100 + 50, 550 - 100 * row, "" + points);
                 }
                 drawProject(row - 1, column - 1, board.getProject(row - 1, column - 1));
@@ -303,19 +317,23 @@ public class Main {
         int yOffset = 400 - row * 100;
 
         if (project == 'H') {
+            StdDraw.setPenColor(StdDraw.RED);
             double[] x = {25 + xOffset, 75 + xOffset, 75 + xOffset, 50 + xOffset, 25 + xOffset};
             double[] y = {25 + yOffset, 25 + yOffset, 60 + yOffset, 85 + yOffset, 60 + yOffset};
             StdDraw.polygon(x, y);
         }
         else if(project == '^'){
+            StdDraw.setPenColor(StdDraw.GREEN);
             double[] x = {25 + xOffset, 75 + xOffset, 50 + xOffset};
             double[] y = {25 + yOffset, 25 + yOffset, 85 + yOffset};
             StdDraw.polygon(x, y);
         }
         else if(project == 'O'){
+            StdDraw.setPenColor(StdDraw.BLUE);
             StdDraw.circle(xOffset + 50, yOffset + 50, 30);
         }
         else if (project == '#') {
+            StdDraw.setPenColor(StdDraw.MAGENTA);
             StdDraw.rectangle(xOffset + 50, yOffset + 50, 30, 30);
         }
         StdDraw.show();
@@ -336,21 +354,32 @@ public class Main {
     /**
      * Translate click from graphics to array indices
      */
-    private void translateClick() {
+    public void translateClick() {
         mouseClick[0] = Math.floor(mouseClick[0] / 100);
         mouseClick[1] = board.ROWS - Math.floor(mouseClick[1] / 100);
     }
 
+    /**
+     *
+     * @return if a click is valid
+     */
     private boolean isClickValid() {
-        if (!(mouseClick[1] < board.ROWS) || !(mouseClick[0] < board.COLS)) {return false;}
+
         return true;
     }
 
     private void getAndTranslateClick() {
-        do {
-            waitForClick();
-            translateClick();
-        } while (!isClickValid());
+        waitForClick();
+        translateClick();
+    }
+
+    /**
+     * post translation call
+     * @return
+     */
+    public boolean clickIsOnBoard() {
+        return ((mouseClick[0] <= board.COLS) && (mouseClick[0] > 0) &&
+                (mouseClick[1] <= board.ROWS) && (mouseClick[1] > 0));
     }
 }
 
