@@ -387,6 +387,11 @@ public class Main {
         //Draw Label for available bonus project
         StdDraw.line(0, 750, 400, 750);
         StdDraw.text(105, 775, "Current Roll:");
+
+        //Check that dice have been rolled
+        if(rolls[0] == 0){
+            return;
+        }
         System.out.printf("%d, %d\n", rolls[0], rolls[1]);
         StdDraw.picture(50, 700, rolls[0] + ".png", 75, 75);
         StdDraw.picture(125, 700, rolls[1] + ".png", 75, 75);
