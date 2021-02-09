@@ -41,6 +41,8 @@ public class Main {
         System.out.println("First roll: " + rolls[0]);
         System.out.println("Second roll: " + rolls[1]);
         System.out.println("Sum of rolls: " + rolls[2]);
+
+        drawRoll();
     }
 
     private void pickRowAndPlaceProject(int col, char proj) {
@@ -256,7 +258,7 @@ public class Main {
     void initializeGraphics() {
         StdDraw.enableDoubleBuffering();
         StdDraw.setXscale(0, 800);
-        StdDraw.setYscale(0, 700);
+        StdDraw.setYscale(0, 950);
         drawBoard();
     }
 
@@ -267,9 +269,13 @@ public class Main {
         StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.setFont(new java.awt.Font("Serif", java.awt.Font.PLAIN, 24));
 
-        // Draw grid lines
+        // Draw vertical grid lines
         for (int i = 0; i < 800; i += 100) {
             StdDraw.line(i, 1, i, 600);
+
+        }
+        // Draw horizontal grid lines
+        for (int i = 0; i < 700; i += 100) {
             StdDraw.line(1, i, 700, i);
         }
 
@@ -294,6 +300,9 @@ public class Main {
             }
         }
 
+        drawBonusProjects();
+        drawProjectTypes();
+
         // Draw title and score
         StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.text(425, 625, "Rolling Village");
@@ -301,10 +310,10 @@ public class Main {
 
         // Draw roll button
         StdDraw.setPenColor(StdDraw.RED);
-        StdDraw.filledSquare(750, 250, 50);
+        StdDraw.filledSquare(750, 50, 50);
         StdDraw.setPenColor(StdDraw.BLACK);
-        StdDraw.square(750, 250, 50);
-        StdDraw.text(750, 250, "Roll");
+        StdDraw.square(750, 50, 50);
+        StdDraw.text(750, 50, "Roll");
 
         StdDraw.show();
     }
@@ -312,7 +321,7 @@ public class Main {
     /**
      * Draws a project on the graphics screen.
      */
-    private static void drawProject(int row, int col, char project) {
+    private void drawProject(int row, int col, char project) {
         int xOffset = 100 + col * 100;
         int yOffset = 400 - row * 100;
 
@@ -352,6 +361,32 @@ public class Main {
     }
 
     /**
+     * Draws the currently available bonus projects
+     */
+    private void drawBonusProjects(){
+        StdDraw.setPenColor(Color.BLACK);
+        //Draw Label for available bonus project
+        StdDraw.line(0, 900, 400, 900);
+        StdDraw.text(200, 925, "Available Bonus Projects:");
+
+        for(char project: bonusProjects){
+            if(project == 'H'){
+                double[] x = {25, 75, 75, 50, 25};
+                double[] y = {25 + 800, 25 + 800, 60 + 800, 85 + 800, 60 + 800};
+                StdDraw.polygon(x, y);
+            }
+            else if(project == '^'){
+                double[] x = {25 + 100, 75 + 100, 50 + 100};
+                double[] y = {25 + 800, 25 + 800, 85 + 800};
+                StdDraw.polygon(x, y);
+            }
+            else{
+                StdDraw.circle(200 + 50, 800 + 50, 30);
+            }
+        }
+    }
+
+    /**
      * Translate click from graphics to array indices
      */
     public void translateClick() {
@@ -378,8 +413,52 @@ public class Main {
      * @return
      */
     public boolean clickIsOnBoard() {
-        return ((mouseClick[0] <= board.COLS) && (mouseClick[0] > 0) &&
-                (mouseClick[1] <= board.ROWS) && (mouseClick[1] > 0));
+                return ((mouseClick[0] <= board.COLS) && (mouseClick[0] > 0) &&
+                        (mouseClick[1] <= board.ROWS) && (mouseClick[1] > 0));
+            }
+    /**
+     * Draws the different project types along with their associated dice rolls.
+     */
+    private void drawProjectTypes(){
+
+        //Lake and associated dice
+       StdDraw.picture(575, 700, "3.png", 75, 75);
+       StdDraw.picture(650, 700, "6.png", 75, 75);
+       StdDraw.circle(750, 700, 30);
+
+        //Forest and associated dice
+        StdDraw.picture(575, 800, "2.png", 75, 75);
+        StdDraw.picture(650, 800, "5.png", 75, 75);
+        double[] x = {25 + 700, 75 + 700, 50 + 700};
+        double[] y = {25 + 745, 25 + 745, 85 + 745};
+        StdDraw.polygon(x, y);
+
+        //House and associated dice
+        StdDraw.picture(575, 900, "1.png", 75, 75);
+        StdDraw.picture(650, 900, "4.png", 75, 75);
+        double[] x2 = {25 + 700, 75 + 700, 75 + 700, 50+ 700, 25 + 700};
+        double[] y2 = {25 + 845, 25 + 845, 60 + 845, 85 + 845, 60 + 845};
+        StdDraw.polygon(x2, y2);
+    }
+
+    /**
+     * Draws the dice from the current roll.
+     */
+    private void drawRoll(){
+        StdDraw.setPenColor(Color.BLACK);
+        //Draw Label for available bonus project
+        StdDraw.line(0, 750, 400, 750);
+        StdDraw.text(105, 775, "Current Roll:");
+
+        //Check that dice have been rolled
+        if(rolls[0] == 0){
+            return;
+        }
+        System.out.printf("%d, %d\n", rolls[0], rolls[1]);
+        StdDraw.picture(50, 700, rolls[0] + ".png", 75, 75);
+        StdDraw.picture(125, 700, rolls[1] + ".png", 75, 75);
+
+        StdDraw.show();
     }
 }
 
