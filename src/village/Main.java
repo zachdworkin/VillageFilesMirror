@@ -13,6 +13,7 @@ public class Main {
     private static int[] rowFromSum = {-1, -1, -1, 0, 0, 1, 1, 2, 3, 3, 4, 4, -1};
 
     private int[] rolls = new int[2];
+    private Dice dice;
     public Board board;
     private Set<Character> bonusProjects;
 
@@ -23,6 +24,7 @@ public class Main {
 
     public static void main(String[] args) {
         Main main = new Main();
+        main.setSeed();
         main.initializeGraphics();
         main.placeInitialProjects();
         for (int turn = 1; turn < 10; turn++) {
@@ -34,8 +36,22 @@ public class Main {
         System.out.println("Final score of the game: " + main.board.getScore());
     }
 
+    /**
+     * Sets the seed. If the player does not choose a seed, they get a random seed.
+     */
+    public void setSeed(){
+        System.out.println("Choose a seed. If you don't want to choose a seed, enter '-1'.");
+        Scanner in = new Scanner(System.in);
+        int seed = in.nextInt();
+        if (seed != -1){
+            dice = new Dice(seed);
+        } else {
+            dice = new Dice();
+        }
+    }
+
     private void getRolls() {
-        rolls = Dice.rollTwice();
+        rolls = dice.rollTwice();
         System.out.println("First roll: " + rolls[0]);
         System.out.println("Second roll: " + rolls[1]);
         System.out.println("Sum of rolls: " + rolls[2]);
@@ -298,6 +314,8 @@ public class Main {
         StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.square(750, 50, 50);
         StdDraw.text(750, 50, "Roll");
+
+        StdDraw.text(300, 700, "Seed: " + dice.getSeed());
 
         StdDraw.show();
     }
