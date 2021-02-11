@@ -1,5 +1,6 @@
 package village;
 
+import java.util.List;
 import edu.princeton.cs.algs4.StdDraw;
 import java.awt.*;
 import java.util.ArrayList;
@@ -482,4 +483,3 @@ public class Main {
         StdDraw.show();
     }
 }
-
