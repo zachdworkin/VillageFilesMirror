@@ -2,26 +2,33 @@ package village;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class Board {
 
-    private final static int[][] points = {{3, 0, 2, 2, 0, 3},
+    public final static int[][] points = {{3, 0, 2, 2, 0, 3},
             {0, 1, 0, 0, 1, 0},
             {2, 0, 1, 1, 0, 2},
             {0, 1, 0, 0, 1, 0},
             {3, 0, 2, 2, 0, 3}};
-    private final static int ROWS = 5;
-    private final static int COLS = 6;
+    public final static int ROWS = 5;
+    public final static int COLS = 6;
 
+    private int score;
     private char[][] projects;
 
     public Board() {
+        score = 0;
         projects = new char[5][6];
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLS; col++) {
                 projects[row][col] = '-';
             }
         }
+    }
+
+    public int getScore(){
+        return score;
     }
 
     /*
@@ -40,10 +47,13 @@ public class Board {
 
         builtBoard.append("[-      1  2  3  4  5  6]\n");
         for (int row = 0; row < ROWS; row++) {
-            builtBoard.append('[' + startingChars[row]);
+            builtBoard.append('[');
+            builtBoard.append(startingChars[row]);
             for (int col = 0; col < COLS; col++) {
-                builtBoard.append(" " + projects[row][col] +
-                        points[row][col]);
+                builtBoard.append(" ");
+                builtBoard.append(projects[row][col]);
+                builtBoard.append(points[row][col]);
+
             }
 
             builtBoard.append("]\n");
@@ -91,7 +101,7 @@ public class Board {
                     playable.add(col + offset);
                 } else if (availableInLeftColumn > availableInRightColumn) {
                     playable.add(col - offset);
-                } else { // availableInRightColumn > availableInLeftColumn
+                } else{
                     playable.add(col + offset);
                 }
                 return playable;
@@ -172,6 +182,74 @@ public class Board {
                 }
             }
         }
+        score += finalScore;
         return finalScore;
+    }
+
+    /**
+     * Finds all projects connected to the project in a given space.
+     * Modifies inGroup to mark connected projects.
+     * inGroup must be the same size as the board
+     */
+    private void findGroup(int row, int col, char project, boolean[][] inGroup){
+        inGroup[row][col] = true;
+        if (row + 1 < ROWS) {
+            if(getProject(row + 1, col) == project && !inGroup[row + 1][col]) {
+                findGroup(row + 1, col, project, inGroup);
+            }
+        }
+        if (row - 1 >= 0) {
+            if(getProject(row - 1, col) == project && !inGroup[row - 1][col]) {
+                findGroup(row - 1, col, project, inGroup);
+            }
+        }
+        if (col + 1 < COLS) {
+            if(getProject(row, col + 1) == project && !inGroup[row][col  + 1]) {
+                findGroup(row, col + 1, project, inGroup);
+            }
+        }
+        if (col - 1 >= 0) {
+            if(getProject(row, col - 1) == project && !inGroup[row][col  - 1]) {
+                findGroup(row, col - 1, project, inGroup);
+            }
+        }
+    }
+
+    /**
+     * Finds all projects connected to the project in a given space.
+     * Modifies inGroup to mark connected projects.
+     * inGroup must be the same size as the board
+     */
+    private void findGroup(int row, int col, boolean[][] inGroup){
+        if(inGroup[row][col]){
+            return;
+        }
+        char project = getProject(row, col);
+
+        if(project == '-' || project == '#'){
+            return;
+        }
+        findGroup(row, col, project, inGroup);
+    }
+
+    /**
+     * Returns the score for the current turn.
+     */
+    public int scoreRow(int scoringRow){
+        int score = 0;
+        boolean[][] toBeScored = new boolean[ROWS][COLS];
+        for (int col = 0; col < COLS; col++) {
+            findGroup(scoringRow, col, toBeScored);
+        }
+
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLS; col++) {
+                if(toBeScored[row][col]){
+                    score += points[row][col];
+                }
+            }
+        }
+        this.score += score;
+        return score;
     }
 }
