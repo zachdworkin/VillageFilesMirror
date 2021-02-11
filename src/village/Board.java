@@ -1,6 +1,7 @@
 package village;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Board {
 
@@ -9,13 +10,15 @@ public class Board {
             {2, 0, 1, 1, 0, 2},
             {0, 1, 0, 0, 1, 0},
             {3, 0, 2, 2, 0, 3}};
+    private final static int ROWS = 5;
+    private final static int COLS = 6;
 
     private char[][] projects;
 
     public Board() {
         projects = new char[5][6];
-        for (int row = 0; row < 5; row++) {
-            for (int col = 0; col < 6; col++) {
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLS; col++) {
                 projects[row][col] = '-';
             }
         }
@@ -36,9 +39,9 @@ public class Board {
                 "10/11"};
 
         builtBoard.append("[-      1  2  3  4  5  6]\n");
-        for (int row = 0; row < 5; row++) {
+        for (int row = 0; row < ROWS; row++) {
             builtBoard.append('[' + startingChars[row]);
-            for (int col = 0; col < 6; col++) {
+            for (int col = 0; col < COLS; col++) {
                 builtBoard.append(" " + projects[row][col] +
                         points[row][col]);
             }
@@ -54,7 +57,7 @@ public class Board {
      */
     public int availableProjectsInColumn(int col) {
         int availableProjects = 5;
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < ROWS; i++) {
             if (!isEmpty(i, col)) availableProjects--;
         }
         return availableProjects;
@@ -121,5 +124,54 @@ public class Board {
      */
     public boolean isEmpty(Location location) {
         return isEmpty(location.getRow(), location.getCol());
+    }
+
+
+    /**
+     * Returns the project at a given space on the board.
+     */
+    public char getProject(int row, int col) {
+        return projects[row][col];
+    }
+
+    /**
+     * Returns a list of the adjacent projects to a space.
+     * List is in order: Row + 1, Row - 1, Col + 1, Col -1.
+     */
+    public List<Character> getAdjacentProjects(int row, int col) {
+        List<Character> adjacentProjects = new ArrayList<>();
+
+        if (row + 1 < ROWS) {
+            adjacentProjects.add(getProject(row + 1, col));
+        }
+        if (row - 1 >= 0) {
+            adjacentProjects.add(getProject(row - 1, col));
+        }
+        if (col + 1 < COLS) {
+            adjacentProjects.add(getProject(row, col + 1));
+        }
+        if (col - 1 >= 0) {
+            adjacentProjects.add(getProject(row, col - 1));
+        }
+
+        return adjacentProjects;
+    }
+
+    /**
+     * Returns the score added by the final scoring of squares.
+     */
+    public int finalScoring() {
+        int finalScore = 0;
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLS; col++) {
+                if (getProject(row, col) == '#') {
+                    List<Character> adjacentProjects = getAdjacentProjects(row, col);
+                    if (adjacentProjects.contains('H') && adjacentProjects.contains('^') && adjacentProjects.contains('O')) {
+                        finalScore += 10;
+                    }
+                }
+            }
+        }
+        return finalScore;
     }
 }

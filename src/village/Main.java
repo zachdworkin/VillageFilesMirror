@@ -10,7 +10,7 @@ public class Main {
     private static char[] projects = {'#', 'H', '^', 'O', 'H', '^', 'O'};
     private int[] rolls = new int[2];
 
-    private Board board;
+    public Board board;
     private Set<Character> bonusProjects;
 
     public Main() {
@@ -24,6 +24,8 @@ public class Main {
         for (int turn = 1; turn < 10; turn++) {
             main.takeTurn(turn);
         }
+        System.out.println("Final score from squares with all three adjacent project types: "
+                + main.board.finalScoring());
     }
 
     private void getRolls() {
@@ -48,7 +50,7 @@ public class Main {
      * @param col integer column
      * @return arraylist of rows in string form
      */
-    private ArrayList<String> getValidRowInput(int col) {
+    public ArrayList<String> getValidRowInput(int col) {
         ArrayList<String> validRows = new ArrayList<>();
         for (int row = 0; row < 5; row++) {
             if (board.isEmpty(new Location(row, col))) {
@@ -63,7 +65,7 @@ public class Main {
      *
      * @return arraylist of columns in string form
      */
-    private ArrayList<String> getValidColInput() {
+    public ArrayList<String> getValidColInput() {
         ArrayList<String> validColumns = new ArrayList<>();
         for (int col = 0; col < 6; col++) {
             ArrayList<Integer> playableColumns = board.findPlayableColumns(col);
@@ -197,7 +199,7 @@ public class Main {
         do {
             System.out.print("Enter what project you want to build: ");
             project = input.next().charAt(0);
-        } while(!bonusProjects.contains(project));
+        } while (!bonusProjects.contains(project));
         bonusProjects.remove(project);
 
         System.out.println("In which row and column do you want to build " + project + "?");
