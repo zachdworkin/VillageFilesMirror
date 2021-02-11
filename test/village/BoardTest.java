@@ -3,6 +3,8 @@ package village;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -160,5 +162,81 @@ class BoardTest {
         contents = board.findPlayableColumns(4);
         assertEquals(contents.size(), 1);
         assertEquals(contents.get(0), 5);
+    }
+
+    @Test
+    void isEmptyWorksOnEmptyWithLocation(){
+        Board board = new Board();
+        Location location = new Location(3,3);
+        assertTrue(board.isEmpty(location));
+    }
+
+    @Test
+    void isEmptyWorksOnNotEmptyWithLocation(){
+        Board board = new Board();
+        Location location = new Location(3,3);
+        board.addProject(location, '^');
+        assertFalse(board.isEmpty(location));
+    }
+
+    @Test
+    void findsAdjacentProjects(){
+        Board board = new Board();
+        board.addProject(new Location(1, 1), '^');
+        board.addProject(new Location(2, 3), '#');
+        board.addProject(new Location(3, 2), 'O');
+        board.addProject(new Location(4, 1), 'H');
+
+        List<Character> correct = Arrays.asList('O', '-', '#', '-');
+        assertEquals(correct, board.getAdjacentProjects(2, 2));
+    }
+
+    @Test
+    void findsAdjacentProjectsAtEdgeOfBoard(){
+        Board board = new Board();
+        board.addProject(new Location(0, 1), '^');
+
+        List<Character> correct = Arrays.asList('-', '^');
+        assertEquals(correct, board.getAdjacentProjects(0, 0));
+    }
+
+    @Test
+    void finalScoresSquaresCorrectly(){
+        Board board = new Board();
+        board.addProject(new Location(1, 1), '#');
+        board.addProject(new Location(0, 1), 'H');
+        board.addProject(new Location(1, 0), 'H');
+        board.addProject(new Location(1, 2), 'H');
+
+        board.addProject(new Location(3, 4), '#');
+        board.addProject(new Location(3, 3), 'H');
+        board.addProject(new Location(4, 4), 'O');
+        board.addProject(new Location(3, 5), '^');
+
+        board.addProject(new Location(4, 0), '#');
+
+        assertEquals(10, board.finalScoring());
+    }
+
+    @Test
+    void scoringWorks(){
+        Board board = new Board();
+        board.addProject(new Location(1, 1), '#'); //1
+        board.addProject(new Location(0, 1), 'H'); //0 points
+        board.addProject(new Location(1, 0), 'H'); //0
+        board.addProject(new Location(1, 2), 'H'); //0
+        board.addProject(new Location(2, 2), 'H'); //1
+        board.addProject(new Location(3, 2), 'H'); //0
+        board.addProject(new Location(4, 2), 'H'); //2
+        board.addProject(new Location(4, 3), 'H'); //2
+
+        board.addProject(new Location(3, 4), '^'); //1
+        board.addProject(new Location(2, 4), 'O'); //0
+
+        assertEquals(0, board.scoreRow(0));
+        assertEquals(5, board.scoreRow(1));
+        assertEquals(5, board.scoreRow(2));
+        assertEquals(6, board.scoreRow(3));
+        assertEquals(5, board.scoreRow(4));
     }
 }
